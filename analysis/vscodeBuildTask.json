@@ -1,0 +1,10 @@
+{
+    "label": "Compile to WebAssembly with Emscripten",
+    "type": "shell",
+    "command": "cd /home/thomas/Desktop/CircuitDesignerElectron/analysis/ && emcc ${file}  -o ${workspaceFolderBasename}.js  -s NO_EXIT_RUNTIME=1 -s EXPORTED_RUNTIME_METHODS=ccall,cwrap",
+    "problemMatcher": [],
+    "group": {
+        "kind": "build",
+        "isDefault": true
+    }
+}

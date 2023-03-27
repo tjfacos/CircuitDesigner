@@ -1,0 +1,146 @@
+.control-button {
+    
+    /* display: none; */
+
+    width: 60px;
+    height: 60px;
+    
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    margin: 20px;
+
+    background-color: var(--toolbarBackground);
+    border-color: var(--accent);
+    border-width: 2px;
+    border-radius: 20%;
+    border-style: dashed;
+    
+    cursor: pointer;
+
+    box-shadow: 10px 10px black;
+
+    transition: box-shadow 200ms ease, border-color 200ms ease;
+}
+
+.control-button:hover {
+    box-shadow: 5px 5px black;
+    border-color: var(--accentHighlight);
+}
+
+#delete-button {
+    bottom: 0px;
+    right: 100px;
+}
+
+#overlay {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    height: 100%;
+    width: 100%;
+    background-color: blue;
+    filter: opacity(5%);
+    z-index: -1;
+    display: none;
+}
+
+#help-button {
+    display: block;
+    top: 0px;
+    right: 0px;
+
+}
+
+#editor-wizard {
+    bottom: 0px;
+    right: 0px;
+    position: fixed;
+    
+    margin: 10px;
+    padding: 5px;
+    
+    display: block;
+
+    width: 20%;
+    height: 40%;
+
+    background-color: var(--toolbarBackground);
+    border-radius: 10px;
+
+    font-family: 'Lexend', sans-serif;
+
+    transition: box-shadow 200ms ease, right 200ms ease;
+}
+
+#editor-wizard.hidden {
+    display: none;
+}
+
+#editor-wizard .control-button {
+    box-shadow: none;
+}
+
+#editor-wizard:hover {
+    box-shadow: 5px 5px black;
+}
+
+#editor-wizard h1 {
+    color: whitesmoke;
+    font-size: 40px;
+
+    margin: 10px;
+}
+
+#editor-wizard p {
+    color: red;
+    font-size: 20px;
+}
+
+.wizard-textfield {
+    background-color: transparent;
+    color: whitesmoke;
+    
+    border-color: var(--accent);
+    border-width: 2px;
+    border-radius: 5px;
+    border-style: dashed;
+    
+    appearance: textfield;
+    outline: none;
+    
+    font-family: 'Lexend', sans-serif;
+
+    font-size: 20px;
+    margin: 10px;
+    padding: 5px;
+}
+
+
+
+
+#simulate-btn {
+    position: fixed;
+
+    right: 0px;
+    bottom: 0px;
+
+    margin: 10px;
+    padding: 0;
+
+    height: 50px;
+    width: 120px;
+
+    border-radius: 0;
+
+}
+
+#simulate-btn img {
+    position: relative;
+    margin: 2px;
+    height: 80%;
+    left: auto;
+
+    /* filter: invert(100%); */
+
+}
