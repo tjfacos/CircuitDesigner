@@ -556,9 +556,9 @@ class Wire {
         componentMap.forEach((comp, id) => {
             // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
             // Then add the id and have the component eval its own connections
-            if ( AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id))) 
+            if ( AreConnected(this, comp) && !(this.connections.includes(id))) 
             {
-                console.log(AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id)))
+                // console.log(AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id)))
                 console.log(`Connection with ${id} detected...`)
                 this.connections.push(id)
                 if (!comp.connections.includes(this.div.id)) comp.SetConnections()
