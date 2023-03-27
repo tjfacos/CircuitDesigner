@@ -1,0 +1,27 @@
+// Common tasks
+
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Run Electron app",
+        "command": "npm start",
+        "type": "shell",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        }
+      },
+      {
+        "label": "Compile to WebAssembly with Emscripten",
+        "type": "shell",
+        "command": "emcc ${file}  -o ${workspaceFolderBasename}.js",
+        "problemMatcher": [],
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        }
+      }
+    ]
+  }
+
