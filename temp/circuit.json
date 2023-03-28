@@ -1,10 +1,42 @@
 {
+    "cell1": {
+        "name": "cell1",
+        "type": "cell",
+        "connections": [
+            "wire1",
+            "wire2"
+        ],
+        "properties": {
+            "emf": 10
+        }
+    },
     "resistor1": {
         "name": "resistor1",
         "type": "resistor",
-        "connections": [],
+        "connections": [
+            "wire1",
+            "wire2"
+        ],
         "properties": {
             "resistance": 10
         }
+    },
+    "wire1": {
+        "name": "wire1",
+        "type": "wire",
+        "connections": [
+            "cell1",
+            "resistor1"
+        ],
+        "properties": {}
+    },
+    "wire2": {
+        "name": "wire2",
+        "type": "wire",
+        "connections": [
+            "cell1",
+            "resistor1"
+        ],
+        "properties": {}
     }
 }
