@@ -1,7 +1,7 @@
 const { app, BrowserWindow, Menu, MenuItem, ipcMain } = require('electron')
 const path = require('path')
 
-const { EncodeComponent } = require("./utility/fileIO")
+const { EncodeJSON } = require("./utility/fileIO")
 
 const createWindow = () => {
 
@@ -48,13 +48,10 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow()
   
-  ipcMain.handle("encodeComponentJSON", (event, componentString, name) => {
-    console.log("Main")
-    console.log(`componentString: ${componentString}`)
-    console.log(`name: ${name}`)
-
+  ipcMain.handle("encodeCircuit", (event, fileString) => {
+        
+    EncodeJSON(fileString)
     
-    EncodeComponent(componentString, name)
     return 0
   })
 

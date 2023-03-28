@@ -5,8 +5,10 @@ var TestComponent = {
 }
 
 const encodeCircuit = () => {
+    
+    let componentsObj = {}
+
     componentMap.forEach(element => {
-        // console.log(element)
         let obj = {
             "name": element.div.id,
             "type": element.type,
@@ -20,10 +22,13 @@ const encodeCircuit = () => {
 
         if (element.hasOwnProperty("resistance")) {
             obj.properties.resistance = element.resistance
-        } 
-
-        api.encodeComponent(obj) 
-
         }
+        componentsObj[obj.name] = obj
+        
+    }
     )
+    
+    console.log(componentsObj)
+
+    api.encodeJSON(componentsObj)
 }
