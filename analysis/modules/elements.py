@@ -38,7 +38,7 @@ class Element:
         out = f"{self.ID}: a {self.type} with properties: connections: {self.connections}; "
         if self.type == "cell":
             out += f"emf: {self.emf}; "
-        if self.type == "loadcomponent":
+        elif self.type != "wire":
             out += f"resistance: {self.resistance};"
 
         return out
