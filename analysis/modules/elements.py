@@ -17,8 +17,6 @@ import PySpice
 from PySpice.Unit import *
 from PySpice.Spice.Netlist import Circuit 
 
-from modules import graph_analysis
-
 class Element:
     inst_counter = 0
     name = ""
