@@ -1,1 +1,1 @@
-Consider adding loading Screen
+Add Positive and negative terminals to cells
