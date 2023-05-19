@@ -252,6 +252,59 @@ class Cell extends Component {
         super(type);
         this.emf = 10.0;
     }
+
+    SetConnections() {
+        console.log("Settings Cell Connections...")
+        
+        const GetTerminal = (comp) => {
+            // This is called when we know the component is connected. We will check if its connected to the positive (left side)
+            // Left side (+) is portA (first in the portCoords array)
+            
+            let anodeCoords = this.portCoords[0]
+            
+            let terminal = "-"
+            
+            comp.portCoords.forEach(port => {
+                if (arrayEquals(anodeCoords, port))
+                {
+                    terminal = "+"
+                }
+            })
+            
+            console.log(`${comp.div.id} is connected to ${this.div.id} at the ${terminal} terminal... `)
+            
+            return terminal
+            
+        }
+        
+        
+        
+        this.connections = [null, null]
+        // For a cell, the first element will be connected to anode (+), second to cathode (-)
+
+        componentMap.forEach((comp, id) => {
+            
+            // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
+            // Then add the id and have the component eval its own connections
+            if ( AreConnected(this, comp) && !(this.connections.includes(id))) 
+            {
+                // console.log(AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id)))
+                let terminal = GetTerminal(comp)
+                
+                if (terminal == "+" && !(this.connections[0])){
+                    this.connections[0] = id
+                } 
+                
+                if  (terminal == "-" && !(this.connections[1])) {
+                    this.connections[1] = id
+                }
+                
+                if (!comp.connections.includes(this.div.id)) comp.SetConnections()
+            }
+        })
+
+
+    }
 }
 
 class LoadComponent extends Component {

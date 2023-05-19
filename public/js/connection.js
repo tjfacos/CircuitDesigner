@@ -1,6 +1,4 @@
 function arrayEquals(a, b) {
-    // console.log(a)
-    // console.log(b)
     
     let val =  Array.isArray(a) &&
         Array.isArray(b) &&
