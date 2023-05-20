@@ -1,7 +1,7 @@
 const { app, BrowserWindow, Menu, MenuItem, ipcMain } = require('electron')
 const path = require('path')
 
-const { EncodeJSON } = require("./utility/fileIO")
+const { CallAnalysis } = require("./utility/python_connection")
 
 const createWindow = () => {
 
@@ -48,9 +48,9 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow()
   
-  ipcMain.handle("encodeCircuit", (event, fileString) => {
+  ipcMain.handle("CallAnalysis", (event, circuit) => {
         
-    EncodeJSON(fileString)
+    CallAnalysis(circuit)
     
     return 0
   })

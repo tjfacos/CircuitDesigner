@@ -30,5 +30,5 @@ const encodeCircuit = () => {
     
     console.log(componentsObj)
 
-    api.encodeJSON(componentsObj)
+    api.CommenceAnalysis(componentsObj)
 }

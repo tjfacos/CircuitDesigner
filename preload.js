@@ -1,10 +1,10 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('api', {
-  encodeJSON: (obj) => {
+  CommenceAnalysis: (obj) => {
     
-    console.log("Encoding...")
+    console.log("Begin Analysis...")
     
-    return ipcRenderer.invoke("encodeCircuit", JSON.stringify(obj))
+    return ipcRenderer.invoke("CallAnalysis", JSON.stringify(obj))
   }
 })
