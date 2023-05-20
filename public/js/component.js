@@ -547,16 +547,18 @@ class Wire {
         
         
         if (orientation == "horizontal") {
-            this.div.style.width = length + "px";
+            this.div.style.width = length + this.thickness + "px";
             this.div.style.height = this.thickness + "px";
+            this.div.style.left = left - this.thickness/2 + "px"
+            this.div.style.top = top + "px"
         } else {
             this.div.style.width = this.thickness + "px";
-            this.div.style.height = length + "px";
+            this.div.style.height = length + this.thickness + "px";
+            this.div.style.left = left + "px"
+            this.div.style.top = top - this.thickness/2 + "px"
         }
         
         
-        this.div.style.left = left + "px"
-        this.div.style.top = top + "px"
 
         this.addControls()
     }
