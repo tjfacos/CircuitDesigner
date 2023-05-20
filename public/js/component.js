@@ -572,28 +572,22 @@ class Wire {
         var wizard = document.getElementById("editor-wizard");
 
         // Add event listener to bring up controls on double-click
-        const clickHandler = () => {
-            console.log(`${element.id} selected...`)
-            element.classList.toggle("selectedComponent")
-            joint1.classList.toggle("selectedComponent")
-            joint2.classList.toggle("selectedComponent")
-            ToggleEditor(this)
-            this.selected = true;
-        }
         
-        element.addEventListener("dblclick", clickHandler)
-        joint1.addEventListener("dblclick", clickHandler)
-        joint2.addEventListener("dblclick", clickHandler)
+        element.addEventListener("dblclick", () => {
+            console.log(`${element.id} selected...`)
+            element.classList.add("selectedComponent")
+            ToggleEditor(this, "on")
+            this.selected = true;
+        })
 
         document.addEventListener('click', (e) => {
             if (!( element.contains(e.target) || wizard.contains(e.target)) && this.selected ) {
-                element.classList.toggle("selectedComponent")
-                joint1.classList.toggle("selectedComponent")
-                joint2.classList.toggle("selectedComponent")
-                ToggleEditor(this)
+                element.classList.remove("selectedComponent")
+                ToggleEditor(this, "off")
                 this.selected = false
             }
         })
+        
     }
 
     destroy() {

@@ -6,7 +6,7 @@ const closeHelpDialog = () => {
     document.getElementById("help-dialog").close()
 }
 
-const ToggleEditor = (component) => {
+const ToggleEditor = (component, state) => {
     // If the editor is not yet displayed, display it
     // Set the name to the selected component
     // Make sure emf is hidden unless component is a cell
@@ -55,6 +55,13 @@ const ToggleEditor = (component) => {
     } 
     
     dialog.classList.toggle("hidden")
+
+    if (state && state == "on")
+    {
+        dialog.classList.remove("hidden")
+    } else if (state && state == "off") {
+        dialog.classList.add("hidden")
+    }
 
 }
 
