@@ -27,6 +27,8 @@ if __name__ == "__main__":
     
     # Example data for testing
 
+    print(sys.argv[1])
+
 
     """
     {
