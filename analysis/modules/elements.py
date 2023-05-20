@@ -38,7 +38,7 @@ class Element:
         out = f"{self.ID}: a {self.type} with properties: connections: {self.connections}; "
         if self.type == "cell":
             out += f"emf: {self.emf}; "
-        elif self.type != "wire":
+        elif self.type not in ["wire", "node"]:
             out += f"resistance: {self.resistance};"
 
         return out
@@ -122,25 +122,31 @@ class CircuitModel:
     # 3) Create Netlist using objects 
     # 4) Profit (basically) 
 
+    # UPDATE: I've done a think, and I believe that for a wire with only 2 connections, I can model it as a resistor with 0 resistance
 
 
 
 
 
 
-
-    def NodalAnalysis(self): # Oh, bother...
+    def ConstructNetlist(self): # Oh, bother...
         circuit_list = self.elements
-        # Start at the anode of the cell and iterate
-        current = None
-        # Find cell1
+        print(circuit_list)
+        
+        print()
+        print()
+
         cells = [ ele for ele in circuit_list if ele.type == "cell" ]
         resistors = [ ele for ele in circuit_list if ele.type == "resistor" ]
         wires = [  ele for ele in circuit_list if ele.type == "wire" ]
         bulbs = [  ele for ele in circuit_list if ele.type == "bulb" ]
         nodes = []
 
-        # print(cells, resistors, wires, bulbs, sep="\n")
+        for wire in wires:
+            print(wire)
+
+        print()
+        print()
 
         for wire in wires:
             if len(wire.connections) > 2: # Node required
@@ -150,11 +156,43 @@ class CircuitModel:
                         wire.connections
                     )
                 )
-                del wire
 
-        print(cells, resistors, wires, nodes, bulbs, sep="\n")
+                removed_id = wire.ID
+                node_id = nodes[-1].ID
+                
+                # Replace references to the removed wire with new references to the node
+                # for ele in [*circuit_list, *nodes]:
+                #     ele.connections = list(map(lambda x: x.replace(removed_id, node_id), ele.connections))
 
+                # wires.remove(wire)
+                # circuit_list.remove(wire)
+                
+
+            # if len(wire.connections) == 2 and "wire" in wire.connections[0] and "wire" in wire.connections[1]:
+            #     connections = []
+            #     for w in wires:
+            #         if w.ID in wire.connections:
+            #             connections.append(w)
+
+            #     connections[0].connections = list(map(lambda x: x.replace(wire.ID, connections[1].ID), connections[0].connections))
+            #     connections[1].connections = list(map(lambda x: x.replace(wire.ID, connections[0].ID), connections[1].connections))
+
+            #     wires.remove(wire)
+            #     continue
+
+        print()
+        print()
         
+        for ele in [*wires, *nodes]:
+            print(ele)
+
+        print()
+        print()
+
+        circuit_list += nodes
+
+        for ele in circuit_list:
+            print(ele)
         
         
         
