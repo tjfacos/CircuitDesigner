@@ -16,14 +16,27 @@ const createWindow = () => {
   // Form menu
   
   let menu = new Menu()
-  
-  helpItem = new MenuItem({
-    "click": () => {
-      mainWindow.webContents.executeJavaScript("openHelpDialog()")
-    },
-    "label": "Help"
-  })
 
+  fileItem = new MenuItem({
+    "label": "File",
+    "submenu": [
+      {
+        "label": "Save Design",
+        "accelerator": "Ctrl+S"
+      },
+      {
+        "label": "Open Design",
+        "accelerator": "Ctrl+O"
+      },
+      {
+      "click": () => {
+        mainWindow.webContents.executeJavaScript("openHelpDialog()")
+      },
+      "label": "Help"
+      }
+    ]
+  })
+  
   devToolsItem = new MenuItem({
     "click": () => {
       mainWindow.webContents.openDevTools()
@@ -32,9 +45,9 @@ const createWindow = () => {
     "accelerator": "Ctrl+Shift+I"
   })
 
-  menu.append(helpItem)
+  menu.append(fileItem)
   menu.append(devToolsItem)
-  
+
   mainWindow.maximize()
   mainWindow.loadFile('public/index.html')
   mainWindow.setMenu(menu)
