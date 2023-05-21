@@ -75,9 +75,8 @@ const AddHandlers = (mainWindow) => {
   })
   
   ipcMain.handle("SaveDesign", (_, data) => {
-    result = SaveDesign(data, mainWindow)
+    success = SaveDesign(data, mainWindow)
   
-    return result
   })
 } 
 

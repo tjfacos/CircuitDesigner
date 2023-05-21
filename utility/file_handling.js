@@ -1,8 +1,8 @@
 const fs = require("fs")
-const { dialog } = require("electron")
+const { dialog, Notification } = require("electron")
 
 const SaveDesign = (data, mainWindow) => {
-    console.log(data)
+    // console.log(data)
     
     var success = false
 
@@ -21,7 +21,13 @@ const SaveDesign = (data, mainWindow) => {
 
             fs.writeFile(value.filePath, data, (err) => {
               if (err){ console.log(`ERROR: ${err}`) }
-              else { success = true }
+              else { 
+                // console.log("WOOOOO!")
+                new Notification({
+                  title: "Save Successful!",
+                  body: `File saved to ${value.filePath}`
+                }).show()
+              }
             })
 
           }
@@ -29,7 +35,6 @@ const SaveDesign = (data, mainWindow) => {
         }
       )
 
-    return success
 }
 
 module.exports = {SaveDesign}
