@@ -11,12 +11,8 @@ const mapToStr = (map) => {
         // console.log(comp)
         for (let property in comp) {
             // console.log(property)
-            if (property == "div") {
-                console.log(`Component name is: ${name}`)
-                let val = document.getElementById(name).outerHTML.toString()
-                console.log(val)
-                obj[name][property] = val  
-            } else {
+            if (property == "div") {} 
+            else {
                 obj[name][property] = comp[property]
             }
             
@@ -28,11 +24,17 @@ const mapToStr = (map) => {
   
 
 const SaveCircuit = () => {
-    if (componentMap.size > 0){ 
+    if (componentMap.size > 0){
+        
+        html = document.getElementById("component-container").innerHTML
+        
         map = mapToStr(componentMap)
-        console.log(map)
+        
+        let data = JSON.stringify([html, map])
 
-        api.SaveDesign(map) 
+        console.log(data)
+
+        api.SaveDesign(data) 
     
     } 
 }

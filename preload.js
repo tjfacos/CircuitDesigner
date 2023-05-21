@@ -1,11 +1,11 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('api', {
-  CommenceAnalysis: (obj) => {
+  CommenceAnalysis: (data) => {
     
     console.log("Begin Analysis...")
     
     return ipcRenderer.invoke("CallAnalysis", JSON.stringify(obj))
   },
-  SaveDesign: (map) => { return ipcRenderer.invoke("SaveDesign", map) }
+  SaveDesign: (data) => { return ipcRenderer.invoke("SaveDesign", data) }
 })
