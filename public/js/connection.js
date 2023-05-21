@@ -1,34 +1,42 @@
 function arrayEquals(a, b) {
     
+    // console.log("running")
+
     let val =  Array.isArray(a) &&
         Array.isArray(b) &&
         a.length === b.length &&
         a.every((val, index) => val === b[index]);
-    // console.log(val)
+    
     return val
+
 }
 
 
-const AreConnected = (comp1, comp2) => {
+const AreConnected = (PC1, PC2) => {
     // Return true if the 2 components have ports that overlap, false otherwise
     
+    let port = 0
 
-    if (comp1 == comp2) return false
+    var portA
+    var portB
 
-    let connected = false
+    for (let x = 0 ; x < 2 ; x++ ){
+        port++
+        portA = PC1[x]
 
-
-    comp1.portCoords.forEach(portA => {
-        comp2.portCoords.forEach(portB => {
+        for (let y = 0 ; y < 2 ; y++ ) {
+            portB = PC2[y]
             
-            // console.log(arrayEquals(portA, portB))
+            // console.log(portA)
+            // console.log(portB)
+
             if (arrayEquals(portA, portB)){
                 console.log("MATCH")
-                connected = true;
+                return port
             }
-        })
-    });
+        }
+    }
     
-    return connected
+    return 0
 
 }

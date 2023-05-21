@@ -195,14 +195,14 @@ class Component {
         element.addEventListener("dblclick", () => {
             console.log(`${element.id} selected...`)
             element.classList.toggle("selectedComponent")
-            ToggleEditor(this)
+            ToggleEditor(this, "on")
             this.selected = true;
         })
 
         document.addEventListener('click', (e) => {
             if (!( element.contains(e.target) || wizard.contains(e.target)) && this.selected ) {
                 element.classList.toggle("selectedComponent")
-                ToggleEditor(this)
+                ToggleEditor(this, "off")
                 this.selected = false
             }
         })
@@ -227,20 +227,42 @@ class Component {
         return NewCoords;
     }
     
+    getPortCoords() {
+        return this.portCoords
+    }
+
     SetConnections() {
-        console.log("Settings Connections...")
+        console.log(`Setting Connections for ${this.div.id}...`)
         
-        this.connections = []
+        this.connections = {
+            "t1": [],
+            "t2": []
+        }
         
         componentMap.forEach((comp, id) => {
+            
             // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
             // Then add the id and have the component eval its own connections
-            if ( AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id))) 
+
+            if (this.div.id == id) { return }
+
+            console.log(`Checking for connection with ${id}`)
+            
+            let connection = AreConnected(this.getPortCoords(), comp.getPortCoords())
+
+            // console.log(connection)
+
+            // console.log(connection && this.connections.length < 2 && !(this.connections.includes(id)))
+
+            if ( connection && !(this.connections["t1"] || this.connections["t2"]) < 2 && !(this.connections["t1"].includes(id) || this.connections["t2"].includes(id))) 
             {
-                console.log(AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id)))
                 console.log(`Connection with ${id} detected...`)
-                this.connections.push(id)
-                if (!comp.connections.includes(this.div.id)) comp.SetConnections()
+                
+                let terminal = `t${connection}`
+                this.connections[terminal].push(id)
+                
+                if (comp.connections["t1"].includes(this.div.id) || comp.connections["t2"].includes(this.div.id)) {}
+                else { comp.SetConnections() }
             }
         })
 
@@ -251,59 +273,6 @@ class Cell extends Component {
     constructor (type) {
         super(type);
         this.emf = 10.0;
-    }
-
-    SetConnections() {
-        console.log("Settings Cell Connections...")
-        
-        const GetTerminal = (comp) => {
-            // This is called when we know the component is connected. We will check if its connected to the positive (left side)
-            // Left side (+) is portA (first in the portCoords array)
-            
-            let anodeCoords = this.portCoords[0]
-            
-            let terminal = "-"
-            
-            comp.portCoords.forEach(port => {
-                if (arrayEquals(anodeCoords, port))
-                {
-                    terminal = "+"
-                }
-            })
-            
-            console.log(`${comp.div.id} is connected to ${this.div.id} at the ${terminal} terminal... `)
-            
-            return terminal
-            
-        }
-        
-        
-        
-        this.connections = [null, null]
-        // For a cell, the first element will be connected to anode (+), second to cathode (-)
-
-        componentMap.forEach((comp, id) => {
-            
-            // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
-            // Then add the id and have the component eval its own connections
-            if ( AreConnected(this, comp) && !(this.connections.includes(id))) 
-            {
-                // console.log(AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id)))
-                let terminal = GetTerminal(comp)
-                
-                if (terminal == "+" && !(this.connections[0])){
-                    this.connections[0] = id
-                } 
-                
-                if  (terminal == "-" && !(this.connections[1])) {
-                    this.connections[1] = id
-                }
-                
-                if (!comp.connections.includes(this.div.id)) comp.SetConnections()
-            }
-        })
-
-
     }
 }
 
@@ -333,7 +302,7 @@ const addComponent = (type) => {
     component.type = type
     componentMap.set(component.div.id, component);
 
-    console.log(componentMap);
+    // console.log(componentMap);
 
 }
 
@@ -597,22 +566,62 @@ class Wire {
         this.ports[1].remove()
     }
 
-    SetConnections() {
-        console.log("Settings Connections...")
+    // SetConnections() {
+    //     console.log("Settings Connections...")
         
-        this.connections = []
+    //     this.connections = []
+        
+    //     componentMap.forEach((comp, id) => {
+    //         // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
+    //         // Then add the id and have the component eval its own connections
+    //         if ( AreConnected(this, comp) && !(this.connections.includes(id))) 
+    //         {
+    //             console.log(`Connection with ${id} detected...`)
+    //             this.connections.push(id)
+    //             if (!comp.connections.includes(this.div.id)) comp.SetConnections()
+    //         }
+    //     })
+    // }
+
+    getPortCoords() {
+        return this.portCoords
+    }
+
+    SetConnections() {
+        console.log(`Setting Connections for ${this.div.id}...`)
+        
+        this.connections = {
+            "t1": [],
+            "t2": []
+        }
         
         componentMap.forEach((comp, id) => {
+            
             // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
             // Then add the id and have the component eval its own connections
-            if ( AreConnected(this, comp) && !(this.connections.includes(id))) 
+
+            if (this.div.id == id) { return }
+
+            console.log(`Checking for connection with ${id}`)
+            
+            let connection = AreConnected(this.getPortCoords(), comp.getPortCoords())
+
+            // console.log(connection)
+
+            // console.log(connection && this.connections.length < 2 && !(this.connections.includes(id)))
+
+            if ( connection && !(this.connections["t1"].includes(id) || this.connections["t2"].includes(id))) 
             {
-                // console.log(AreConnected(this, comp) && this.connections.length < 2 && !(this.connections.includes(id)))
                 console.log(`Connection with ${id} detected...`)
-                this.connections.push(id)
-                if (!comp.connections.includes(this.div.id)) comp.SetConnections()
+                
+                let terminal = `t${connection}`
+                this.connections[terminal].push(id)
+                
+                if (comp.connections["t1"].includes(this.div.id) || comp.connections["t2"].includes(this.div.id)) {}
+                else { comp.SetConnections() }
             }
         })
+
     }
 
 }
