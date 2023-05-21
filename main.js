@@ -66,21 +66,24 @@ const createWindow = () => {
 
 }
 
-app.whenReady().then(() => {
-  mainWindow = createWindow()
-  
+const AddHandlers = (mainWindow) => {
   ipcMain.handle("CallAnalysis", (_, circuit) => {
         
     CallAnalysis(circuit)
     
     return 0
   })
-
+  
   ipcMain.handle("SaveDesign", (_, map) => {
     result = SaveDesign(map, mainWindow)
-
+  
     return result
   })
+} 
+
+app.whenReady().then(() => {
+  AddHandlers(createWindow())
+  
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
