@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('api', {
     console.log("Begin Analysis...")
     
     return ipcRenderer.invoke("CallAnalysis", JSON.stringify(obj))
-  }
+  },
+  SaveDesign: (map) => { return ipcRenderer.invoke("SaveDesign", map) }
 })
