@@ -130,5 +130,5 @@ dist
 .pnp.*
 
 test/
-.vscode/
+# .vscode/
 activate.sh
