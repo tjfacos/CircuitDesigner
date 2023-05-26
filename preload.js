@@ -7,5 +7,6 @@ contextBridge.exposeInMainWorld('api', {
     
     return ipcRenderer.invoke("CallAnalysis", JSON.stringify(obj))
   },
-  SaveDesign: (data) => { return ipcRenderer.invoke("SaveDesign", data) }
+  SaveDesign: (data) => { return ipcRenderer.invoke("SaveDesign", data) },
+  GetDesign: () => { return ipcRenderer.invoke("LoadDesign") }
 })

@@ -40,5 +40,5 @@ const SaveCircuit = () => {
 }
 
 const LoadCircuit = () => {
-
+    loaded_data = api.GetDesign()
 }

@@ -3,7 +3,7 @@ const path = require('path')
 
 // Local Dependencies
 const { CallAnalysis } = require("./utility/python_connection")
-const { SaveDesign } = require("./utility/file_handling")
+const { SaveDesign, LoadDesign } = require("./utility/file_handling")
 
 
 const createWindow = () => {
@@ -35,7 +35,10 @@ const createWindow = () => {
       },
       {
         "label": "Open Design",
-        "accelerator": "Ctrl+O"
+        "accelerator": "Ctrl+O",
+        "click": () => {
+          mainWindow.webContents.executeJavaScript("LoadCircuit()") 
+        }
       },
       {
       "click": () => {
@@ -76,8 +79,13 @@ const AddHandlers = (mainWindow) => {
   
   ipcMain.handle("SaveDesign", (_, data) => {
     success = SaveDesign(data, mainWindow)
-  
   })
+
+  ipcMain.handle("LoadDesign", () => {
+    return LoadDesign(mainWindow)
+  })
+
+
 } 
 
 app.whenReady().then(() => {

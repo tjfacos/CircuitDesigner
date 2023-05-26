@@ -34,7 +34,32 @@ const SaveDesign = (data, mainWindow) => {
         
         }
       )
+}
+
+/* 
+
+
+
+
+*/
+
+
+const LoadDesign = (mainWindow) => {
+  let data = []
+  
+  dialog.showSaveDialog(mainWindow, {
+    "buttonLabel": "Load",
+    "title": "Load Circuit Design",
+    "defaultPath": "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs"
+  }).then((value) => {
+    if (value.canceled){ return }
+
+  })
+
+  return data
 
 }
 
-module.exports = {SaveDesign}
+
+
+module.exports = {SaveDesign, LoadDesign}
