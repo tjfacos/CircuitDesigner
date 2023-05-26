@@ -37,27 +37,38 @@ const SaveDesign = (data, mainWindow) => {
 }
 
 /* 
+This method returns an array, containingL:
+ - The componentMap data (except div)
+ - The innerHTML for the comoponent container
 
-
-
-
+ If the operation is cancelled, an empy array is returned
 */
 
 
-const LoadDesign = (mainWindow) => {
+const LoadDesign = async (mainWindow) => {
   let data = []
   
-  dialog.showSaveDialog(mainWindow, {
-    "buttonLabel": "Load",
-    "title": "Load Circuit Design",
-    "defaultPath": "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs"
-  }).then((value) => {
-    if (value.canceled){ return }
+  let result = await dialog.showOpenDialog(mainWindow, {
+    title: "Open Circuit Design",
+    defaultPath: "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs\\NewCircuit.circ",
+    filters: [
+      {name: "Circuits", extensions: "circ"}
+    ], 
+    properties: ["openFile"]
 
   })
+  
+  console.log(result)
 
-  return data
 
+  if (result.canceled){ return }
+
+  fs.readFile(result.filePaths[0], "utf-8", (err, content) => {
+    // mainWindow.webContents.executeJavaScript(`console.log(${content})`)
+    mainWindow.webContents.executeJavaScript(`LoadToDom(${content})`)
+    
+  })
+  
 }
 
 
