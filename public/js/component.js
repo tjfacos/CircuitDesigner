@@ -10,7 +10,8 @@ var ComponentCounters = {
 var SelectedElement = null;
 
 class Component {
-    constructor (type) {
+    constructor (type, load_data) {
+        
         this.type = type;
         this.div = document.createElement("DIV")
         this.connections = []
@@ -27,13 +28,37 @@ class Component {
         this.selected = false;
         this.placed = false;
         
-        this.addIcon();
-        
-        this.addToCanvas();
-        
+        if (!load_data) {
+            this.addIcon();
+            
+            this.addToCanvas();
+        } else {
+            this.setFromLoad(load_data);
+        }
         
     }
     
+    setFromLoad(load_data) {
+        console.log(load_data)
+
+        this.connections = load_data.connections
+        this.height = load_data.height
+        this.width = load_data.width
+        this.portCoords = load_data.portCoords
+        this.div = document.getElementById(load_data.id)
+        this.ports = Array.from(document.getElementById(load_data.id).getElementsByClassName("port"))
+
+        if (load_data.type == "cell") {
+            this.emf = load_data.emf
+        } else {
+            this.resistance = load_data.resistance
+        }
+
+        this.addHandlers()
+
+
+    }
+
     setPortCoords() {
         var x = this.div.offsetLeft
         var y = this.div.offsetTop
@@ -270,33 +295,34 @@ class Component {
 }
 
 class Cell extends Component {
-    constructor (type) {
-        super(type);
-        this.emf = 10.0;
+    constructor (type, load_data) {
+        super(type, load_data);
+        if (!this.emf) {this.emf = 10.0;}
     }
 }
 
 class LoadComponent extends Component {
-    constructor (type) {
-        super(type);
-        this.resistance = 10.0;
+    constructor (type, load_data) {
+        // console.log(load_data)
+        super(type, load_data)
         this.voltage = 0.0;
+        if (!this.resistance){
+            this.resistance = 10.0;
+        }
     }
 }
 
 // In future, an AC Source and logic for AC may be included. But not for now ...
 
-const addComponent = (type) => {
+const addComponent = (type, fromLoad) => {
 
     let component;
     if (type == "cell") {
-        component = new Cell(type);
+        component = new Cell(type, fromLoad);
     } else if (type == "wire") {
-        component = createWire()
-        // component.Realise(window.innerWidth + 100, window.innerHeight + 100)
-        
+        component = createWire(fromLoad)
     } else {
-        component = new LoadComponent(type);
+        component = new LoadComponent(type, fromLoad);
     }
     
     component.type = type
@@ -305,6 +331,24 @@ const addComponent = (type) => {
     // console.log(componentMap);
 
 }
+
+const addComponentFromLoad = (componentObj) => {
+    let component;
+    let type = componentObj.type
+
+    if (type == "cell") {
+        component = new Cell(type, componentObj);
+    } else if (type == "wire") {
+        component = createWire(componentObj)
+    } else {
+        component = new LoadComponent(type, componentObj);
+    }
+
+    component.type = type
+    componentMap.set(component.div.id, component)
+
+}
+
 
 
 const DeleteComponent = () => {
@@ -365,9 +409,9 @@ const SetAllPortCoords = () => {
 
 
 
-const createWire = () => {
+const createWire = (load_data) => {
     
-    const wireName = "wire" + ComponentCounters["wire"]++;
+    
     
     const createJoint = () => {
         let joint = document.createElement("div")
@@ -379,14 +423,14 @@ const createWire = () => {
     const placeToGrid = (x, y) => {
         let cellsize = 30;
         let NewCoords = []
-
+        
         let coords = [x , y]
         coords.forEach(coord => {
             let up = Math.ceil(coord/cellsize)*cellsize;
             let down = Math.floor(coord/cellsize)*cellsize;
             NewCoords.push(( Math.abs(coord - up) < Math.abs(coord - down) ? up : down))
         });
-    
+        
         return NewCoords;
     }
     
@@ -414,7 +458,13 @@ const createWire = () => {
         }
         
     }
+    
+    const wireName = "wire" + ComponentCounters["wire"]++;
 
+    if (load_data) {
+        return new Wire(load_data, null, null, wireName)
+    }
+    
     var container = document.createElement("div")
     container.id = wireName + "-container"
     container.classList.add("wire-container")
@@ -423,8 +473,8 @@ const createWire = () => {
     let joints = [createJoint(), createJoint()]
     
     const thickness = 10
-    var wire = new Wire(joints, thickness, wireName)
-
+    var wire = new Wire(null, joints, thickness, wireName)
+    
     
     wire.addToContainer()
     
@@ -496,8 +546,14 @@ const createWire = () => {
 
 
 class Wire {
-    constructor(joints, thickness, name) {
+    constructor(load_data, joints, thickness, name) {
         this.type = "wire";
+        
+        if (load_data) {
+            this.setFromLoad(load_data, name)
+            return
+        }
+        
         this.div = document.createElement("DIV")
         this.connections = [];
         this.thickness = thickness
@@ -510,6 +566,18 @@ class Wire {
         this.ports = joints
     }
     
+    setFromLoad(load_data, name) {
+        console.log(name)
+        console.log(load_data)
+        this.connections = load_data.connections
+        this.div = document.getElementById(name)
+        this.portCoords = load_data.portCoords
+        this.thickness = load_data.thickness
+        this.ports = Array.from(document.getElementById(name + "-container").getElementsByClassName("joint"))
+        this.selected = false
+        this.addControls()
+    }
+
     addToContainer() { document.getElementById(this.div.id + "-container").append(this.div) }
     
     Realise(left, top, length, orientation) {
@@ -566,23 +634,6 @@ class Wire {
         this.ports[1].remove()
     }
 
-    // SetConnections() {
-    //     console.log("Settings Connections...")
-        
-    //     this.connections = []
-        
-    //     componentMap.forEach((comp, id) => {
-    //         // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
-    //         // Then add the id and have the component eval its own connections
-    //         if ( AreConnected(this, comp) && !(this.connections.includes(id))) 
-    //         {
-    //             console.log(`Connection with ${id} detected...`)
-    //             this.connections.push(id)
-    //             if (!comp.connections.includes(this.div.id)) comp.SetConnections()
-    //         }
-    //     })
-    // }
-
     getPortCoords() {
         return this.portCoords
     }
@@ -605,10 +656,6 @@ class Wire {
             console.log(`Checking for connection with ${id}`)
             
             let connection = AreConnected(this.getPortCoords(), comp.getPortCoords())
-
-            // console.log(connection)
-
-            // console.log(connection && this.connections.length < 2 && !(this.connections.includes(id)))
 
             if ( connection && !(this.connections["t1"].includes(id) || this.connections["t2"].includes(id))) 
             {

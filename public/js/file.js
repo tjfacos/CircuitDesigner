@@ -21,7 +21,6 @@ const mapToStr = (map) => {
 
     return JSON.stringify(obj)
 }
-  
 
 const SaveCircuit = () => {
     if (componentMap.size > 0){
@@ -39,12 +38,32 @@ const SaveCircuit = () => {
     } 
 }
 
-// const LoadCircuit = () => { api.GetDesign() }
+api.HandleLoad((_, data_string) => {
+    let data = JSON.parse(data_string)
+    
+    data[1] = JSON.parse(data[1])
+    
+    document.getElementById("component-container").innerHTML = data[0]
+    
+    ComponentCounters = {
+        "resistor": 1,
+        "bulb": 1,
+        "cell": 1,
+        "wire": 1
+    };
 
-// ipcRenderer.on("loaded-file-reciever", (event, data) => {
-//     console.log(data)
-// })
+    componentMap = new Map()
+    let componentData = data[1]
+    
+    Object.keys(componentData).forEach((key) => {
+        let dataEntry = componentData[key]
+        dataEntry.id = key
+        
+        addComponentFromLoad(dataEntry)
 
-api.HandleLoad((event, data) => {
-    console.log(data)
+    })
+
+
+
+
 })
