@@ -39,6 +39,12 @@ const SaveCircuit = () => {
     } 
 }
 
-const LoadCircuit = () => {
-    loaded_data = api.GetDesign()
-}
+// const LoadCircuit = () => { api.GetDesign() }
+
+// ipcRenderer.on("loaded-file-reciever", (event, data) => {
+//     console.log(data)
+// })
+
+api.HandleLoad((event, data) => {
+    console.log(data)
+})

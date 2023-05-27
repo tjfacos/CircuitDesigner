@@ -37,7 +37,7 @@ const createWindow = () => {
         "label": "Open Design",
         "accelerator": "Ctrl+O",
         "click": () => {
-          mainWindow.webContents.executeJavaScript("LoadCircuit()") 
+          LoadDesign(mainWindow) 
         }
       },
       {
@@ -78,12 +78,12 @@ const AddHandlers = (mainWindow) => {
   })
   
   ipcMain.handle("SaveDesign", (_, data) => {
-    success = SaveDesign(data, mainWindow)
+    SaveDesign(data, mainWindow)
   })
 
-  ipcMain.handle("LoadDesign", () => {
-    return LoadDesign(mainWindow)
-  })
+  // ipcMain.handle("LoadDesign", () => {
+  //   return LoadDesign(mainWindow)
+  // })
 
 
 } 

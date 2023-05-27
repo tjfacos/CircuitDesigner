@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('api', {
     return ipcRenderer.invoke("CallAnalysis", JSON.stringify(obj))
   },
   SaveDesign: (data) => { return ipcRenderer.invoke("SaveDesign", data) },
-  GetDesign: () => { return ipcRenderer.invoke("LoadDesign") }
+  GetDesign: () => { return ipcRenderer.invoke("LoadDesign") },
+  HandleLoad: (callback) => ipcRenderer.on("loaded-file", callback)
 })

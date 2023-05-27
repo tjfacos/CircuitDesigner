@@ -1,5 +1,5 @@
 const fs = require("fs")
-const { dialog, Notification } = require("electron")
+const { dialog, Notification, ipcMain } = require("electron")
 
 const SaveDesign = (data, mainWindow) => {
     // console.log(data)
@@ -64,9 +64,7 @@ const LoadDesign = async (mainWindow) => {
   if (result.canceled){ return }
 
   fs.readFile(result.filePaths[0], "utf-8", (err, content) => {
-    // mainWindow.webContents.executeJavaScript(`console.log(${content})`)
-    mainWindow.webContents.executeJavaScript(`LoadToDom(${content})`)
-    
+    mainWindow.webContents.send("loaded-file", content)
   })
   
 }
