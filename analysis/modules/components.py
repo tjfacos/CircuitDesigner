@@ -91,12 +91,6 @@ class CircuitModel:
             Wire(connections)
         )
 
-    
-
-    # The NodalAnalysis method is defined in analysis.py
-    from modules.analysis import NodalAnalysis
-
-
 
 
     def Simulate(self):
@@ -122,14 +116,5 @@ class CircuitModel:
 
 
 
-# if __name__ == "__main__":
-#     nodes = [Node(()) for _ in range(3)]
-#     for node in nodes:
-#         print(node.ID)
-#         print(node.type)
-
-    
-#     nodes = [Cell((), 1) for _ in range(3)]
-#     for node in nodes:
-#         print(node.ID)
-#         print(node.type)
+    def NodalAnalysis(self):
+        return "HOWDY!!!"
