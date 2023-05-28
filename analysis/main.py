@@ -19,50 +19,10 @@ logger = Logging.setup_logging(logging_level=Logging.logging.ERROR)
 
 
 if __name__ == "__main__":
-    # circuit_obj = construction.build()
-
-    # print(circuit_obj)
-    # circuit_obj.ConstructNetlist()
-    
-    
-    # Example data for testing
-
-    print(sys.argv[1])
-
-
-    """
-    {
-        "wire1": {
-            "name": "wire1",
-            "type": "wire",
-            "connections": [
-                "cell1",
-                "wire2"
-            ],
-            "properties": {}
-        },
-        "wire2": {
-            "name": "wire2",
-            "type": "wire",
-            "connections": [
-            "wire1",
-            "wire3"
-            ],
-            "properties": {}
-        },
-        "wire3": {
-            "name": "wire3",
-            "type": "wire",
-            "connections": [
-                "resistor2",
-                "wire2"
-            ],
-            "properties": {}
-        }
-    }
+    # circuit_list = construction.build(sys.argv[1])
+    circuit_obj = construction.build(
     """
     
-    """
     {
         "resistor1": {
             "name": "resistor1",
@@ -194,4 +154,8 @@ if __name__ == "__main__":
             "properties": {}
         }
     }
+    
     """
+    )
+
+    print(circuit_obj)
