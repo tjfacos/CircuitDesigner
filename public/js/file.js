@@ -31,7 +31,7 @@ const SaveCircuit = () => {
         
         let data = JSON.stringify([html, map])
 
-        console.log(data)
+        // console.log(data)
 
         api.SaveDesign(data) 
     
