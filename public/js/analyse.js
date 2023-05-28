@@ -1,8 +1,9 @@
-var TestComponent = {
-    "name": "R",
-    "type": "resistor",
-    "connections": [1,2]
+const Simulate = () => {
+    // Circuit validation
+
+    encodeCircuit()
 }
+
 
 const encodeCircuit = () => {
     
@@ -32,3 +33,6 @@ const encodeCircuit = () => {
 
     api.CommenceAnalysis(componentsObj)
 }
+
+
+// Recieve Analysis Data

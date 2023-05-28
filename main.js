@@ -70,6 +70,7 @@ const createWindow = () => {
 }
 
 const AddHandlers = (mainWindow) => {
+  
   ipcMain.handle("CallAnalysis", (_, circuit) => {
         
     CallAnalysis(circuit)
@@ -80,11 +81,6 @@ const AddHandlers = (mainWindow) => {
   ipcMain.handle("SaveDesign", (_, data) => {
     SaveDesign(data, mainWindow)
   })
-
-  // ipcMain.handle("LoadDesign", () => {
-  //   return LoadDesign(mainWindow)
-  // })
-
 
 } 
 

@@ -2,6 +2,8 @@ const exec = require('child_process').exec
 
 const CallAnalysis = (circuitString) => {
 
+    console.log(circuitString)
+
     const isWin = process.platform === "win32"
 
     let path = process.argv[1]

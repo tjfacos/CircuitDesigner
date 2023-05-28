@@ -5,7 +5,7 @@
 # By the time the circuit reaches this stage, we must assume it is valid (checks should by in Front)
 
 # Idea is...
-    # 1) Represent all the components (and wires) as objects, in a list or set or summin
+    # 1) Represent all the components (and wires) as objects, in a list or set or summin (X)
     # 2) Write an algorithm that searches for node placements, and creates nodes to connect the components
         # a) Any wire or component with more than 2 connections will need a node
         # b) Search methods should track where it has gone (graph theory should help) 
@@ -117,4 +117,9 @@ class CircuitModel:
 
 
     def NodalAnalysis(self):
+        # Wires can be modelled as resistors, of 0 resistance
+        # At any terminal with more than 1 connection, a node is required
+        
+        
+        
         return "HOWDY!!!"

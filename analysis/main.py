@@ -12,14 +12,14 @@ from modules import construction
 
 logger = Logging.setup_logging(logging_level=Logging.logging.ERROR)
 
-# circuit = Circuit("UserCircuit")
-
-
-# test.VoltageDivider()
-
-
 if __name__ == "__main__":
-    # circuit_list = construction.build(sys.argv[1])
+    # circuit_obj = construction.build(sys.argv[1])
+    
+    print(sys.argv[1])
+
+    exit()
+    
+    
     circuit_obj = construction.build(
     """
     
