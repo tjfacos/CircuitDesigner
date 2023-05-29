@@ -1,7 +1,7 @@
 # This will parse and output JSON
 
 # import modules.components
-from modules.components import *
+from modules.elements import *
 
 import json
 

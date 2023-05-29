@@ -23,7 +23,10 @@ if __name__ == "__main__":
     
     try:
         circuit_obj = construction.build(sys.argv[1])
-    except:
+    except IndexError:
+        print("No circuit given at terminal! Using demo data...")
+        print(DemoData)
         circuit_obj = construction.build(DemoData)
+        print(circuit_obj)
 
-    print(circuit_obj.NodalAnalysis())
+    # print(circuit_obj.NodalAnalysis())
