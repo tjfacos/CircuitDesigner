@@ -108,30 +108,16 @@ class CircuitModel:
         
         circuit_list = self.elements
 
-        cells = [ ele for ele in circuit_list if ele.type == "cell" ]
-        resistors = [ ele for ele in circuit_list if ele.type == "resistor" ]
-        wires = [  ele for ele in circuit_list if ele.type == "wire" ]
-        bulbs = [  ele for ele in circuit_list if ele.type == "bulb" ]
-        nodes = []
+        cells: list[Cell] = [ ele for ele in circuit_list if ele.type == "cell" ]
+        resistors: list[Resistor] = [ ele for ele in circuit_list if ele.type == "resistor" ]
+        wires: list[Wire] = [  ele for ele in circuit_list if ele.type == "wire" ]
+        bulbs: list[Bulb] = [  ele for ele in circuit_list if ele.type == "bulb" ]
+        nodes: list[Node] = []
 
-        # # Old Version
-        # for wire in wires:
-        #     for terminal in wire.connections:
-        #         if len(wire.connections[terminal]) > 1: # If there are 2 or 3 connections at 1 terminal, a node is required
-        #             print(f"Node reqired at {wire.ID}: Connections with {wire.connections}")
-        #             nodes.append(Node(
-        #                 f"node{len(nodes)+1}",
-        #                 (wire.ID, *wire.connections[terminal])
-        #             ))
-
-        # for node in nodes:
-        #     print(node)                
-
-
-        # New Version
         nodes = []
 
         def NodeAlreadyExists(new_node : Node):
+            """Returns True if an identical node is already in the list"""
             for n in nodes:
                 if set(n.connections) == set(new_node.connections):
                     return True
@@ -150,14 +136,9 @@ class CircuitModel:
                         print(f"Node reqired at {wire.ID}: Connections with {wire.connections}")
                         nodes.append(new_node)
         
-        for node in nodes:
-            print(node)
+        print("\n")
+        [print(node) for node in nodes]
 
-        # circuit_list += nodes
-
-        # for ele in circuit_list:
-        #     print(ele)
         
-        
-        
+                
         self.elements = circuit_list
