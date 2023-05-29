@@ -1,23 +1,19 @@
 # This modules defines the classes representing each component, as well as nodes
 
 # By the time the circuit reaches this stage, we must assume it is valid (checks should by in Front)
-
+    # Each components (not wire) should have 1 link at each terminal, no more or less
+    # Each wire can have between 1 - 3 links at each terminal
 
 import PySpice
 from PySpice.Unit import *
 from PySpice.Spice.Netlist import Circuit 
 
 class Element:
-    inst_counter = 0
-    name = ""
-
-    def __init__(self, connections : tuple[str]) -> None:
+    def __init__(self, ID : str, connections : tuple[str]) -> None:
         self.type = type(self).__name__.lower()
-        if not type(self).name: type(self).name = self.type
         self.connections = connections
         
-        type(self).inst_counter += 1
-        self.ID = self.type + str(type(self).inst_counter)
+        self.ID = ID
 
 
     def __str__(self) -> str:
@@ -32,20 +28,20 @@ class Element:
 
 class Cell(Element):
     
-    def __init__(self, connections: tuple[str], emf) -> None:
-        super().__init__(connections)
+    def __init__(self, ID : str, connections: tuple[str], emf) -> None:
+        super().__init__(ID, connections)
         self.emf = emf@u_V #type: ignore
 
 class Resistor(Element):
     
-    def __init__(self, connections: tuple[str], resistance):
-        super().__init__(connections)
+    def __init__(self, ID : str, connections: tuple[str], resistance):
+        super().__init__(ID, connections)
         self.resistance = resistance@u_Ω #type: ignore
 
 class Bulb(Element):
     
-    def __init__(self, connections: tuple[str], resistance):
-        super().__init__(connections)
+    def __init__(self, ID : str, connections: tuple[str], resistance):
+        super().__init__(ID, connections)
         self.resistance = resistance@u_Ω #type: ignore
 
 class Node(Element):
@@ -60,24 +56,24 @@ class CircuitModel:
         self.spice_cir = Circuit("UserCircuit")
         self.elements = []
 
-    def AddCell(self, connections, emf):
+    def AddCell(self, ID, connections, emf):
         self.elements.append(
-            Cell(connections, emf)
+            Cell( ID, connections, emf)
         )
 
-    def AddResistor(self, connections, resistance):
+    def AddResistor(self, ID, connections, resistance):
         self.elements.append(
-            Resistor(connections, resistance)
+            Resistor(ID, connections, resistance)
         )
 
-    def AddBulb(self, connections, resistance):
+    def AddBulb(self, ID, connections, resistance):
         self.elements.append(
-            Bulb(connections, resistance)
+            Bulb(ID, connections, resistance)
         )
 
-    def AddWire(self, connections):
+    def AddWire(self, ID, connections):
         self.elements.append(
-            Wire(connections)
+            Wire(ID, connections)
         )
 
     def Simulate(self):
@@ -107,9 +103,10 @@ class CircuitModel:
 
 
     def ConstructNetlist(self): 
-        circuit_list = self.elements
-        print(circuit_list)
         
+        print("\n\n\t\tStarting Netlist Construction...\t\t\n\n")
+        
+        circuit_list = self.elements
 
         cells = [ ele for ele in circuit_list if ele.type == "cell" ]
         resistors = [ ele for ele in circuit_list if ele.type == "resistor" ]
@@ -117,97 +114,50 @@ class CircuitModel:
         bulbs = [  ele for ele in circuit_list if ele.type == "bulb" ]
         nodes = []
 
-        for wire in wires:
-            print(wire)
+        # # Old Version
+        # for wire in wires:
+        #     for terminal in wire.connections:
+        #         if len(wire.connections[terminal]) > 1: # If there are 2 or 3 connections at 1 terminal, a node is required
+        #             print(f"Node reqired at {wire.ID}: Connections with {wire.connections}")
+        #             nodes.append(Node(
+        #                 f"node{len(nodes)+1}",
+        #                 (wire.ID, *wire.connections[terminal])
+        #             ))
+
+        # for node in nodes:
+        #     print(node)                
 
 
-        for wire in wires:
-            if len(wire.connections) > 2: # Node required
-                print(f"Node reqired at {wire.ID}")
-                nodes.append(
-                    Node(
-                        wire.connections
-                    )
-                )
+        # New Version
+        nodes = []
 
-                # removed_id = wire.ID
-                # node_id = nodes[-1].ID
+        def NodeAlreadyExists(new_node : Node):
+            for n in nodes:
+                if set(n.connections) == set(new_node.connections):
+                    return True
                 
+            return False
 
-        print()
-        print()
+        for wire in wires:
+            for terminal in wire.connections:
+                if len(wire.connections[terminal]) > 1: # If there are 2 or 3 connections at 1 terminal, a node is required
+                    new_node = Node(
+                        f"node{len(nodes)+1}",
+                        (wire.ID, *wire.connections[terminal])
+                    )
+
+                    if not NodeAlreadyExists(new_node):
+                        print(f"Node reqired at {wire.ID}: Connections with {wire.connections}")
+                        nodes.append(new_node)
         
-        for ele in [*wires, *nodes]:
-            print(ele)
+        for node in nodes:
+            print(node)
 
-        print()
-        print()
+        # circuit_list += nodes
 
-        circuit_list += nodes
-
-        for ele in circuit_list:
-            print(ele)
+        # for ele in circuit_list:
+        #     print(ele)
         
         
         
         self.elements = circuit_list
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    nodes = [Node(()) for _ in range(3)]
-    for node in nodes:
-        print(node.ID)
-        print(node.type)
-
-    
-    nodes = [Cell((), 1) for _ in range(3)]
-    for node in nodes:
-        print(node.ID)
-        print(node.type)

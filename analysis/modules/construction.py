@@ -17,20 +17,24 @@ def build(raw):
         match data[obj]["type"]:
             case "cell":
                 circuit_obj.AddCell(
+                    obj,
                     data[obj]["connections"],
                     data[obj]["properties"]["emf"]
                 )
             case "wire":
                 circuit_obj.AddWire(
+                    obj,
                     data[obj]["connections"]
                 )
             case "bulb":
                 circuit_obj.AddBulb(
+                    obj,
                     data[obj]["connections"],
                     data[obj]["properties"]["resistance"]
                 )
             case other:
                 circuit_obj.AddResistor(
+                    obj,
                     data[obj]["connections"],
                     data[obj]["properties"]["resistance"]
                 )
