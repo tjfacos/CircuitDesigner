@@ -9,7 +9,11 @@ const SaveDesign = (data, mainWindow) => {
     dialog.showSaveDialog(mainWindow, {
         "buttonLabel": "Save",
         "title": "Save Circuit Design",
-        "defaultPath": "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs\\NewCircuit.circ"
+        "defaultPath": "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs\\NewCircuit.circ",
+        "filters": [{
+          name: 'Circuit Files',
+          extensions: ['circ']
+        }]
       }).then((value) => {
         
         // console.log(value)
@@ -50,15 +54,16 @@ const LoadDesign = async (mainWindow) => {
   
   let result = await dialog.showOpenDialog(mainWindow, {
     title: "Open Circuit Design",
-    defaultPath: "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs\\NewCircuit.circ",
-    filters: [
-      {name: "Circuits", extensions: "circ"}
-    ], 
+    defaultPath: "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs",
+    filters: [{
+      name: 'Circuit Files',
+      extensions: ['circ']
+    }], 
     properties: ["openFile"]
 
   })
   
-  console.log(result)
+  // console.log(result)
 
 
   if (result.canceled){ return }

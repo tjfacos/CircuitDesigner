@@ -1,24 +1,30 @@
 const exec = require('child_process').exec
+const fs = require("fs")
 
 const CallAnalysis = (circuitString) => {
+    // let path = process.argv[1]
 
     console.log(circuitString)
 
     const isWin = process.platform === "win32"
-
-    let path = process.argv[1]
-
-    let command = `.\\.venv\\scripts\\activate && py main.py ${circuitString}`
+    let command = `.\\.venv\\scripts\\activate && py main.py`
     
     if (!isWin){
         // Construct command for linux
     }
 
-    const python = exec(command, {cwd: "./analysis"}, (err, stdout, stderr) => {
-        console.log(`stdout: ${stdout}`)
-        console.log(`stderr: ${stderr}`)
-        console.log(`err: ${err}`)
+    fs.writeFile("./analysis/temp/circuit.json", circuitString, () => {
+        const python = exec(command, {cwd: "./analysis"}, (err, stdout, stderr) => {
+            console.log(`stdout: ${stdout}`)
+            console.log(`stderr: ${stderr}`)
+            console.log(`err: ${err}`)
+        })
     })
+
+
+
+    
+
 
 }
 

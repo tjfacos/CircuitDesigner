@@ -8,7 +8,7 @@ from PySpice.Spice.Netlist import Circuit
 from PySpice.Unit import *
 import PySpice.Logging.Logging as Logging
 
-from modules import construction
+from modules import construction, file
 
 
 from TestScripts.demo import DemoData
@@ -17,17 +17,9 @@ logger = Logging.setup_logging(logging_level=Logging.logging.ERROR)
 
 if __name__ == "__main__":
     
-    # print(sys.argv[1])
-
-    # exit()
+    circuit_obj = construction.build(file.LoadFile())
     
-    try:
-        circuit_obj = construction.build(sys.argv[1])
-    except IndexError:
-        print("\n\nNo circuit given at terminal! Using demo data...")
-        # print(DemoData)
-        circuit_obj = construction.build(DemoData)
-        print("\n\n\t\tOutputing Build Circuit...\t\t\n\n")
-        print(circuit_obj)
+    print("\n\n\t\tOutputing Build Circuit...\t\t\n\n")
+    print(circuit_obj)
 
     circuit_obj.ConstructNetlist()
