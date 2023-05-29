@@ -21,11 +21,11 @@ class Element:
 
 
     def __str__(self) -> str:
-        out = f"{self.ID}: a {self.type} with properties: connections: {self.connections}; "
+        out = f"{self.ID}: a {self.type} with properties: \n\t->connections: {self.connections}; "
         if self.type == "cell":
-            out += f"emf: {self.emf}; "
+            out += f"\n\t->emf: {self.emf}; "
         if self.type == "loadcomponent":
-            out += f"resistance: {self.resistance};"
+            out += f"\n\t->resistance: {self.resistance};"
 
         return out
 
@@ -89,6 +89,7 @@ class CircuitModel:
         analysis = simulator.operating_point()
 
         # Probably need to process analysis (dictionary?) before return, as data
+        
         # Placeholder
         data = analysis
 
@@ -97,33 +98,18 @@ class CircuitModel:
     def __str__(self) -> str:
         out = f"A circuit with {len(self.elements)} elements:"
         for ele in self.elements:
-            out += f"\n - {ele}"
+            out += f"\n -> {ele}"
 
         return out
 
 
-
-    # 1) Represent all the components (and wires) as objects, in a list or set or summin (X)
-    # 2) Write an algorithm that searches for node placements, and creates nodes to connect the components
-        # a) Any wire or component with more than 2 connections will need a node
-        # b) Search methods should track where it has gone (graph theory should help) 
-        # c) Perhaps it may be worth creating the nodes first, then connects them up 
-    # 3) Create Netlist using objects 
-    # 4) Profit (basically) 
-
-    # UPDATE: I've done a think, and I believe that for a wire with only 2 connections, I can model it as a resistor with 0 resistance
+    # I've done a think, and I believe that for a wire with only 2 connections, I can model it as a resistor with 0 resistance
 
 
-
-
-
-
-    def ConstructNetlist(self): # Oh, bother...
+    def ConstructNetlist(self): 
         circuit_list = self.elements
         print(circuit_list)
         
-        print()
-        print()
 
         cells = [ ele for ele in circuit_list if ele.type == "cell" ]
         resistors = [ ele for ele in circuit_list if ele.type == "resistor" ]
@@ -134,8 +120,6 @@ class CircuitModel:
         for wire in wires:
             print(wire)
 
-        print()
-        print()
 
         for wire in wires:
             if len(wire.connections) > 2: # Node required
