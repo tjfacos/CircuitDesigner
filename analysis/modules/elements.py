@@ -106,12 +106,6 @@ class CircuitModel:
         
         circuit_list = self.elements
 
-        cells: list[Cell] = [ ele for ele in circuit_list if ele.type == "cell" ]
-        resistors: list[Resistor] = [ ele for ele in circuit_list if ele.type == "resistor" ]
-        wires: list[Wire] = [  ele for ele in circuit_list if ele.type == "wire" ]
-        bulbs: list[Bulb] = [  ele for ele in circuit_list if ele.type == "bulb" ]
-        nodes: list[Node] = []
-
         nodes = []
 
         def NodeAlreadyExists(new_node : Node):
@@ -122,27 +116,26 @@ class CircuitModel:
                 
             return None
 
-        for wire in wires:
-            for terminal in wire.connections: # If there are 2 or 3 connections at 1 terminal, a node is required
+        for ele in circuit_list:
+            for terminal in ele.connections: # If there are 2 or 3 connections at 1 terminal, a node is required
                 new_node = Node(
                     f"node{len(nodes)+1}",
-                    [wire.ID, *wire.connections[terminal]]
+                    [ele.ID, *ele.connections[terminal]]
                 )
 
                 if not (n := NodeAlreadyExists(new_node)):
-                    print(f"Node reqired at {wire.ID}: Connections with {wire.connections[terminal]}")
+                    print(f"Node reqired at {ele.ID}: Connections with {ele.connections[terminal]}")
                     n = new_node.ID
                     nodes.append(new_node)
                 
                 
-                wire.connections[terminal] = [n]
+                ele.connections[terminal] = [n]
         
         
-        print("\n\n\n\t\t\t AFTER ADDING NODES \t\t\t\n\n\n")
+        print("\n\n\n\t\t\t\t AFTER ADDING NODES \t\t\t\t\n\n\n")
 
         # Note: Need to have Components updated with nodes, and then check accuracy (have fun...)
 
-        circuit_list = cells + resistors + wires + bulbs + nodes
         for ele in circuit_list:
             if type(ele) == Node:
                 continue
