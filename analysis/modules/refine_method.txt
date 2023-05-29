@@ -1,0 +1,62 @@
+def Refine(self):
+        """This method refines the circuit, by removing unnecessary wires."""
+        
+        changed = False
+
+        redundant: Element = None
+
+        for ele in self.elements:
+            if ele.type != "wire":
+                continue
+
+            connected_elements = [ele.connections["t1"], ele.connections["t2"]]
+
+            # If the element connects 2 nodes, do nothing
+            if "node" in connected_elements[0] and "node" in connected_elements[1]:
+                continue
+
+            redundant = ele
+            
+            break
+
+        if not redundant:
+            return True
+        
+        print(f"{redundant.ID} is redundant")
+        print(f"Connections: {connected_elements}")
+
+        # Identify the 2 connections, and replace
+        found = 0
+        while found < 2:
+            
+            for i in range(len(self.elements)):
+                
+                if self.elements[i].ID in connected_elements:
+                    
+                    found += 1
+
+                    # Replace value in dictionary or tuple
+                    if type(self.elements[i].connections) == dict:
+                        
+                        # print(self.elements[i].connections)
+                        
+                        for k in self.elements[i].connections:
+                            
+                            v = self.elements[i].connections[k]
+
+                            if v == redundant.ID:
+                                self.elements[i].connections[k] = [e for e in connected_elements if e != self.elements[i].ID][0]
+                    
+                    else:
+                        
+                        for x in range(len(self.elements[i].connections)):
+                            
+                            if self.elements[i].connections[x] == redundant.ID:
+                                
+                                self.elements[i].connections[x] = [e for e in connected_elements if e != self.elements[i].ID][0]
+
+
+
+        self.elements.remove(redundant)
+
+        return self.Refine()
