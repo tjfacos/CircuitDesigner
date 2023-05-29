@@ -142,7 +142,7 @@ class CircuitModel:
             for terminal in ele.connections:
                 ele.connections[terminal] = ele.connections[terminal][0]
 
-        self.elements = circuit_list
+        self.elements = circuit_list + nodes
 
                 
         print(self)
