@@ -129,21 +129,31 @@ class CircuitModel:
         # Identify the 2 connections, and replace
         found = 0
         while found < 2:
+            
             for i in range(len(self.elements)):
+                
                 if self.elements[i].ID in connected_elements:
+                    
                     found += 1
 
                     # Replace value in dictionary or tuple
                     if type(self.elements[i].connections) == dict:
-                        print(self.elements[i].connections)
+                        
+                        # print(self.elements[i].connections)
+                        
                         for k in self.elements[i].connections:
+                            
                             v = self.elements[i].connections[k]
+
                             if v == redundant.ID:
                                 self.elements[i].connections[k] = [e for e in connected_elements if e != self.elements[i].ID][0]
                     
                     else:
+                        
                         for x in range(len(self.elements[i].connections)):
+                            
                             if self.elements[i].connections[x] == redundant.ID:
+                                
                                 self.elements[i].connections[x] = [e for e in connected_elements if e != self.elements[i].ID][0]
 
 
@@ -216,5 +226,4 @@ class CircuitModel:
         self.Refine()
 
         print("After Refinement")
-        for ele in self.elements:
-            print(ele)
+        print(self)
