@@ -26,3 +26,4 @@ The app is in a useable state, through I still want to add additional features
 * New File: To clear the screen and componentMap
 * Track open files (to ensure the app can't close without saving files, and save using ctrl+s while designing)
 * Make drawing wires easier, by having a new wire start at the end of each wire
+* Make Bulbs light up
