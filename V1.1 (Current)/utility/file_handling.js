@@ -1,4 +1,5 @@
 const fs = require("fs")
+const resolve = require("path").resolve
 const { dialog, Notification, ipcMain } = require("electron")
 
 const SaveDesign = (data, mainWindow) => {
@@ -9,7 +10,7 @@ const SaveDesign = (data, mainWindow) => {
     dialog.showSaveDialog(mainWindow, {
         "buttonLabel": "Save",
         "title": "Save Circuit Design",
-        "defaultPath": "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs\\NewCircuit.circ",
+        "defaultPath": resolve("./designs"),
         "filters": [{
           name: 'Circuit Files',
           extensions: ['circ']
@@ -54,7 +55,7 @@ const LoadDesign = async (mainWindow) => {
   
   let result = await dialog.showOpenDialog(mainWindow, {
     title: "Open Circuit Design",
-    defaultPath: "C:\\Users\\thoma\\Desktop\\CompSci\\EPQ\\CircuitDesigner\\designs",
+    defaultPath: resolve("./designs"),
     filters: [{
       name: 'Circuit Files',
       extensions: ['circ']
