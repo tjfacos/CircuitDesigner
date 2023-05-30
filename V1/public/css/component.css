@@ -1,0 +1,119 @@
+
+.component {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    text-align: center;
+    /* background-color: var(--toolbarBackground); */
+    
+    /* Border */
+    border-style: dashed;
+    border-width: 2px;
+    border-color: #6f6818;
+    border-radius: 25px;
+
+
+    margin: 0;
+    padding: 0;
+    height: 60px;
+    width: 60px;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+
+.component:hover {
+    border-color: var(--accent);
+    cursor: move;
+    box-shadow: 2px 2px black;
+}
+
+.component img {
+    width: 60px;
+    height: 60px;
+    margin: auto;
+    padding: 0px;
+    filter: invert(90%);
+}
+
+.selectedComponent {
+    border-color: blue;
+    box-shadow: 5px 5px black;
+}
+
+.selectedComponent:hover {
+    border-color: lightskyblue;
+    box-shadow: 10px 10px black;
+}
+
+.component.isBeingAdded {
+    box-shadow: 15px 15px black;
+}
+
+
+.component.rotated {
+    transform: rotate(90deg);
+}
+
+/* Resistor Styles are default. Use .resistor to override them*/
+
+
+/* Bulb Styles */
+.bulb {
+    height: 60px;
+    width: 120px;
+}
+
+.bulb img {
+    height: 40px;
+    width: 120px;
+    padding-top: 10px;
+
+}
+
+/* Cell Styles are also default. */
+
+
+/* Wires, Ports, and Connections */
+
+.joint {
+    position: absolute;
+    border-radius: 50%;
+    background-color: blue;
+    /* transform: rotate(45deg); */
+    filter: opacity(80%);
+    height: 15px;
+    width: 15px;
+    z-index: 5; 
+    transition: background-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+
+.joint:hover {
+    background-color: lightskyblue;
+    box-shadow: 5px 5px black;
+    transform: rotate(45deg);
+}
+
+.wire {
+    height: 10px;
+    background-color: white;
+    border-style: none;
+    border-radius: 0;
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+    margin: 0px;
+    padding: 0px;
+}
+
+.wire:hover {
+    box-shadow: 5px 5px black;
+}
+.wire.selectedComponent{
+    background-color: var(--accent);
+}
+
+
+/* Ports */
+.port {
+    transform: none;
+    height: 10px;
+    width: 10px;
+}

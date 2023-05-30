@@ -1,0 +1,157 @@
+<!--index.html-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Circuit Designer V1</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/toolbar.css">
+    <link rel="stylesheet" href="css/component.css">
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/dialog.css">
+    
+    
+    <!-- Links -->
+    <link rel="icon" href="../assets/icons/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Electrolize">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend">
+    
+  </head>
+  <body onload="initialise()">
+    
+    
+    <div id="editing-frame">
+      <img src="../assets/icons/circuit.png" alt="" id="background-logo">
+      
+      <canvas id="cnv"></canvas>
+      
+      <!-- Components are created within this container div -->
+      <div id="component-container"></div> 
+    </div>
+    
+
+    <div id="toolbar">
+      
+      <div id="components-list">
+        <div id="logo">
+          <img id="logo-img" src="../assets/icons/circuit.png" alt="Electronic Circuit" draggable="false">
+          <span class="itemText" id="AppName">Electronic Circuit Simulator</span>
+        </div>
+        
+        
+        <div class="component-item" id="resistor-button" ondblclick=" addComponent('resistor') ">
+          <img class="component-icon" src="../assets/components/resistor.svg" alt="Resistor" draggable="false">
+          <span class="itemText">Resistor</span>
+        </div>
+        
+        <div class="component-item" id="bulb-button" ondblclick=" addComponent('bulb') ">
+          <img class="component-icon" src="../assets/components/bulb.svg" alt="Bulb" draggable="false">
+          <span class="itemText">Bulb</span>
+        </div>
+        
+        <div class="component-item" id="cell-button" ondblclick=" addComponent('cell') ">
+          <img class="component-icon" src="../assets/components/cell.svg" alt="Cell" draggable="false">
+          <span class="itemText">Cell</span>
+        </div>
+        
+        <div class="component-item" id="wire-button" ondblclick=" addComponent('wire') ">
+          <img class="component-icon" src="../assets/components/wire.svg" alt="Wire" draggable="false">
+          <span class="itemText">Wire</span>
+        </div>
+        
+        <!-- Add Extra Components Here -->
+        
+
+
+        
+        
+      </div>
+      
+      <!-- You could add Settings/ Light/Dark mode button etc. in here at the bottom of the div -->
+      
+      
+    </div>
+    
+    <dialog id="help-dialog">
+      <button class="control-button" id="help-close-button" onclick="closeHelpDialog()">
+        <img src="../assets/graphics/close.svg" alt="Close Window">
+      </button>
+
+      <h1 class="dialogText">
+        Circuit Designer - How to Use
+      </h1>
+      <p class="dialogText">
+        Double click on the toolbar to select a component to place down.<br>
+        Components can be moved across the grid by clicking and draging<br>
+        Double-click on a component to <b>select</b> it<br>
+        You can rotate or delete elements using the control buttons or by pressing <b>'r'</b>or <b>'Delete'</b> on the keyboard
+      </p>
+    </dialog>
+    
+    
+    <div id="editor-wizard"class="hidden">
+      
+      <h1 id="wizard-component-name">Test</h1>
+
+      <input type="number" name="Resistance" id="resistance-field" class="wizard-textfield" placeholder="Resistance (Ω)"
+        oninput="setResistance()"
+      >
+      <input type="number" name="Potential Difference (EMF)" id="emf-field" class="wizard-textfield" placeholder="EMF (V)"
+        oninput="setEMF()"
+        >
+      
+      <p id="wizard-text-output"></p>
+      
+      <button class="control-button" id="rotate-button" onclick="RotateComponent()">
+        <img src="../assets/graphics/rotate.svg" alt="Rotate 90deg">
+      </button>
+      
+      <button class="control-button" id="delete-button" onclick="DeleteComponent()">
+        <img src="../assets/graphics/delete.svg" alt="Delete Component">
+      </button>
+
+    </div>
+    
+    <div id="metrics-wizard">
+      
+      <button class="control-button" id="delete-button" onclick="CloseMetrics()" title="Close">
+        <img src="../assets/graphics/close.svg" alt="Close">
+      </button>
+
+      <h1 id="m-wizard-component-name">Hover Over A Component to See Current and Potential Difference</h1>
+
+      <h2 id="m-wizard-voltage">Voltage: <span id="V_span">  - </span>V</h2>  
+      <h2 id="m-wizard-current">Current: <span id="I_span"> - </span>A</h2>  
+      <h2 id="m-wizard-resistance">Resistance: <span id="R_span"> - </span>Ω</h2>  
+
+    </div>
+
+
+
+    <div id="overlay"></div>
+    
+    <button class="control-button" title="Simulate" id="simulate-btn" onclick="Simulate()">
+      <img src="../assets/graphics/start.svg" alt="Start Simulation">
+    </button>
+
+    <!-- <button style="position: fixed; right: 0px; top: 100px" onclick="ToggleEditor()">ToggleWizard</button> -->
+    
+    <!-- NodeJS -->
+    
+    <!-- JavaScript -->
+    <script type="text/javascript" src="js/grid.js"></script>
+    <script type="text/javascript" src="js/initialise.js"></script>
+    <script type="text/javascript" src="js/component.js"></script>
+    <script type="text/javascript" src="js/dialog.js"></script>
+    <script type="text/javascript" src="js/connection.js"></script>
+    <script type="text/javascript" src="js/analyse.js"></script>
+    <script type="text/javascript" src="js/file.js"></script>
+    
+    
+  </body>
+  </html>
+  
+

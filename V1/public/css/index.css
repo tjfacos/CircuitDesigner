@@ -1,0 +1,57 @@
+:root 
+{
+    --background: #272822;
+    --lineColour: #3e3d32;
+    --toolbarBackground: #303129;
+    --accent: #f6b92a;
+    --accentHighlight: #f7e010;
+    
+    font-family: 'Electrolize', sans-serif;
+    font-size: 16px;
+
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    overflow: auto;
+}
+
+
+
+#component-container{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+#editing-frame {
+    position: relative;
+}
+
+img {
+    user-select: none;
+}
+
+button {
+    outline: none;
+}
+
+#cnv {
+    position: relative;
+}
+
+#background-logo {
+    position: absolute;
+    z-index: -10;
+    opacity: 0.05;
+    margin: 0;
+    padding: 0;
+    top: 120vh;
+    left: calc(150vw - 30vh);
+    width: 60vh;
+    height: 60vh;
+
+}

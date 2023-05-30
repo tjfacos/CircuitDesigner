@@ -1,0 +1,18 @@
+{
+  "name": "epq_circuit_designer",
+  "version": "1.0.0",
+  "description": "A Circuit Simulator for my EPQ. Created by Thomas Facos",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Thomas Facos",
+  "license": "ISC",
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "drag-drop": "^7.2.0",
+    "electron": "^23.1.0",
+    "fs-extra": "^11.1.1",
+    "open": "^9.1.0"
+  }
+}

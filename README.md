@@ -13,13 +13,16 @@ It is powered and implemented with:
   * Electron.js
   
 * Internal Logic
-  * C++
-  * Emscripten
-  * WebAssembly
+  * Python
+  * Pyspice (https://pyspice.fabrice-salvaire.fr)
   * NgSpice circuit simulator (https://github.com/ngspice/ngspice)
     * SPICE is a text-based circuit simulation program on which a majority of existing circuit simulator are based. More detail on it can be found in my Artefact report as well as here: https://en.wikipedia.org/wiki/SPICE
   
-## Current State (updated 07/04/2023)
-The program remains unfinished, although most of the client-facing work is done.
+## Current State (updated 30/05/2023)
+The app is in a useable state, through I still want to add additional features
 
-A new repository has been created so I can write the C++ analysis separately, and import it later.
+## Future Features
+### This list contains features I want to add in
+* New File: To clear the screen and componentMap
+* Track open files (to ensure the app can't close without saving files, and save using ctrl+s while designing)
+* Make drawing wires easier, by having a new wire start at the end of each wire
