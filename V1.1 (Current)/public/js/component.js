@@ -245,9 +245,9 @@ class Component {
             document.getElementById("R_span").innerText = this.resistance
         }
         const remove_values = () => {
-            document.getElementById("V_span").innerText = "-"
-            document.getElementById("I_span").innerText = "-"
-            document.getElementById("R_span").innerText = "-"
+            document.getElementById("V_span").innerText = "  -  "
+            document.getElementById("I_span").innerText = "  -  "
+            document.getElementById("R_span").innerText = "  -  "
         }
 
         if (on) {
@@ -334,7 +334,7 @@ class Cell extends Component {
     constructor (type, load_data) {
         super(type, load_data);
         if (!this.emf) {this.emf = 10.0;}
-        this.resistance = " - "
+        this.resistance = "  -  "
     }
 }
 
