@@ -12,7 +12,9 @@ class Element:
     def __init__(self, ID : str, connections : dict[str, str]) -> None:
         self.type = type(self).__name__.lower()
         self.connections = connections
+        
         self.voltage = 0.0
+        self.current = 0.0
         
         self.ID = ID
 
@@ -182,6 +184,7 @@ class CircuitModel:
                 continue
 
             self.spice_cir.R(ele.ID, ele.connections["t1"], ele.connections["t2"], ele.resistance)
+            self.spice_cir[f"R{ele.ID}"].plus.add_current_probe(self.spice_cir)
 
 
         print("\n\n\n\t\t\t\t NETLIST \t\t\t\t\n\n\n")
@@ -193,29 +196,39 @@ class CircuitModel:
                 
         print("\n\n\n\t\t\t\t SIMULATING (GOOD LUCK)... \t\t\t\t\n\n\n")
 
-        simulator = self.spice_cir.simulator(
-            temperature=25,
-            nominal_temperature=25
-        )
+        simulator = self.spice_cir.simulator( temperature=25, nominal_temperature=25 )
 
         analysis = simulator.operating_point()
 
+        currents = {}
+
+        for node in analysis.branches.values():
+            currents[str(node)] = round(abs(float(node)) , 1)
+
         for ele in [  ele for ele in self.elements if type(ele) in [Cell, Resistor, Bulb] ]:
-            print(ele)
             v = []
             for terminal in ele.connections:
                 v.append(float(analysis[ele.connections[terminal]]))
 
-            print(v)
+            # print(v)
 
             ele.voltage = round(abs(v[0] - v[1]), 1)
             
+            for entry in currents:
+                if ele.ID in entry:
+                    ele.current = currents[entry]
+
+
+            print(ele.ID)
             print(ele.voltage)
-            
+            print(ele.current)
+
+        # print(currents)
 
     def Output(self):
-        voltages_dict = {}
+        
+        results_dict = {}
         for ele in [  ele for ele in self.elements if type(ele) in [Cell, Resistor, Bulb] ]:
-            voltages_dict[ele.ID] = ele.voltage
+            results_dict[ele.ID] = [ele.voltage, ele.current]
 
-        return voltages_dict
+        return results_dict

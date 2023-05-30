@@ -21,6 +21,8 @@ def LoadFile():
     return data
 
 def SaveResults(result_dict):
+    print(result_dict)
+
     PATH = "./temp/results.json"
 
     with open(PATH, "w", encoding="utf-8") as f:

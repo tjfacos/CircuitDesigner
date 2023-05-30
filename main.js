@@ -73,7 +73,7 @@ const AddHandlers = (mainWindow) => {
   
   ipcMain.handle("CallAnalysis", (_, circuit) => {
         
-    CallAnalysis(circuit)
+    CallAnalysis(circuit, mainWindow)
     
     return 0
   })

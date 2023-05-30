@@ -19,7 +19,8 @@ class Component {
         this.portCoords = []
         this.width = 0
         this.height = 0
-        
+        this.voltage = 0
+
         this.div.id = type + ComponentCounters[type]++;
         this.div.classList.add("component");
         this.div.classList.add(type);

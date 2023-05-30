@@ -36,3 +36,21 @@ const encodeCircuit = () => {
 
 
 // Recieve Analysis Data
+
+api.ReceiveAnalysis((_, voltages) => {
+    DisplayAnalysis(voltages)
+})
+
+const DisplayAnalysis = (voltages) => {
+    // Add voltages to components
+
+    console.log(voltages)
+    for (var comp in voltages) {
+        componentMap.get(comp).voltage = voltages[comp]
+        componentMap.get(comp).SetCurrent()
+        // console.log(comp)
+        // console.log(componentMap.get(comp))
+    }
+
+    
+}
