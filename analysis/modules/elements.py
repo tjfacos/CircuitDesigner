@@ -208,7 +208,7 @@ class CircuitModel:
 
             print(v)
 
-            ele.voltage = round(abs(v[0] - v[1]), 2)
+            ele.voltage = round(abs(v[0] - v[1]), 1)
             
             print(ele.voltage)
             
