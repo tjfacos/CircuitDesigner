@@ -22,7 +22,7 @@ const CallAnalysis = (circuitString, window) => {
             if (err) {
                 SendErrorMessage()
             } else {
-                // LoadResults(window)
+                LoadResults(window)
             }
 
         })

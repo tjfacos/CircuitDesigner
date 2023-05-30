@@ -20,6 +20,7 @@ class Component {
         this.width = 0
         this.height = 0
         this.voltage = 0
+        this.current = 0
 
         this.div.id = type + ComponentCounters[type]++;
         this.div.classList.add("component");
@@ -233,6 +234,38 @@ class Component {
             }
         })
     }
+
+    EnableMetricsMode(on) {
+        
+        let element = this.div
+        
+        const add_values = () => {
+            document.getElementById("V_span").innerText = this.voltage
+            document.getElementById("I_span").innerText = this.current
+        }
+        const remove_values = () => {
+            document.getElementById("V_span").innerText = "-"
+            document.getElementById("I_span").innerText = "-"
+        }
+
+        if (on) {
+            element.onmousemove = add_values
+            element.onmouseleave = remove_values
+        } else {
+            document.removeEventListener("mousemove", add_values)
+            document.removeEventListener("mouseleave", add_values)
+        }
+    }
+
+
+
+
+
+
+
+
+
+
     
     rotate() {
         this.div.classList.toggle("rotated")

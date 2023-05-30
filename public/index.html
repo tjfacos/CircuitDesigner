@@ -114,10 +114,25 @@
       </button>
 
     </div>
+    
+    <div id="metrics-wizard">
+      
+      <button class="control-button" id="delete-button" onclick="CloseMetrics()" title="Close">
+        <img src="../assets/graphics/close.svg" alt="Close">
+      </button>
+
+      <h1 id="m-wizard-component-name">Hover Over A Component to See Current and Potential Difference</h1>
+
+      <h2 id="m-wizard-voltage">Voltage: <span id="V_span">  - </span>V</h2>  
+      <h2 id="m-wizard-current">Current: <span id="I_span"> - </span>A</h2>  
+
+    </div>
+
+
 
     <div id="overlay"></div>
     
-    <button class="control-button" id="simulate-btn" onclick="Simulate()">
+    <button class="control-button" title="Simulate" id="simulate-btn" onclick="Simulate()">
       <img src="../assets/graphics/start.svg" alt="Start Simulation">
     </button>
 

@@ -37,20 +37,54 @@ const encodeCircuit = () => {
 
 // Recieve Analysis Data
 
-api.ReceiveAnalysis((_, voltages) => {
-    DisplayAnalysis(voltages)
+api.ReceiveAnalysis((_, results) => {
+    DisplayAnalysis(results)
 })
 
-const DisplayAnalysis = (voltages) => {
-    // Add voltages to components
+const DisplayAnalysis = (results) => {
+    
+    // Add voltages and currents to components
 
-    console.log(voltages)
-    for (var comp in voltages) {
-        componentMap.get(comp).voltage = voltages[comp]
-        componentMap.get(comp).SetCurrent()
-        // console.log(comp)
-        // console.log(componentMap.get(comp))
+    console.log(results)
+    for (var comp in results) {
+        componentMap.get(comp).voltage = results[comp][0]
+        componentMap.get(comp).current = results[comp][1]
     }
 
-    
+    // Prevent Editing
+
+    let toolbar = document.getElementById("toolbar")
+    toolbar.style.display = "none"
+
+    let control_button = document.getElementById("simulate-btn")
+    control_button.style.display = "none"
+
+    // Add Metrics
+
+    let metrics_wizard = document.getElementById("metrics-wizard")
+    metrics_wizard.style.display = "block"
+
+    // Switch on metrics mode for all components
+    componentMap.forEach((comp, key) => {
+        if (!key.includes("wire")) { comp.EnableMetricsMode(true) }
+    })
+
+}
+
+const CloseMetrics = () => {
+    let metrics_wizard = document.getElementById("metrics-wizard")
+    metrics_wizard.style.display = "none"
+
+    let toolbar = document.getElementById("toolbar")
+    toolbar.style.display = "block"
+
+    let control_button = document.getElementById("simulate-btn")
+    control_button.style.display = "block"
+
+
+    // Switch on metrics mode for all components
+    componentMap.forEach((comp, key) => {
+        if (!key.includes("wire")) { comp.EnableMetricsMode(false) }
+    })
+
 }
