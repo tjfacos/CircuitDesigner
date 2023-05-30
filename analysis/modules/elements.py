@@ -20,8 +20,8 @@ class Element:
         out = f"{self.ID}: a {self.type} with properties: \n\t->connections: {self.connections}; "
         if self.type == "cell":
             out += f"\n\t->emf: {self.emf}; "
-        if self.type == "loadcomponent":
-            out += f"\n\t->resistance: {self.resistance};"
+        # if self.type in ["resistor", "bulb"]:
+        #     out += f"\n\t->resistance: {self.resistance};"
 
         return out
 
@@ -79,20 +79,6 @@ class CircuitModel:
             Wire(ID, connections)
         )
 
-    def Simulate(self):
-        simulator = self.spice_cir.simulator(
-            temperature=25,
-            nominal_temperature=25
-        )
-
-        analysis = simulator.operating_point()
-
-        # Probably need to process analysis (dictionary?) before return, as data
-        
-        # Placeholder
-        data = analysis
-
-        return data
 
     def __str__(self) -> str:
         out = f"A circuit with {len(self.elements)} elements:"
@@ -102,79 +88,7 @@ class CircuitModel:
         return out
 
 
-    def Refine(self):
-        """This method refines the circuit, by removing unnecessary wires."""
-        
-        # All wires that aren't connecting 2 nodes together are redundant, and should be replaced
-
-        redundant: Element = None
-
-        wires: list[Wire] = [  ele for ele in self.elements if ele.type == "wire" ]
-
-        for wire in wires:
-            
-            connected_elements = [wire.connections["t1"], wire.connections["t2"]]
-
-            # If the element connects 2 nodes, do nothing
-            if "node" in connected_elements[0] and "node" in connected_elements[1]:
-                continue
-
-            redundant = wire
-            
-            break
-
-        if not redundant:
-            return True
-        
-        print(f"{redundant.ID} is redundant")
-        print(f"Connections: {connected_elements}")
-
-        # Identify the 2 connections, and replace
-        # At this point, wires can either be connecting 2 nodes, a node and a wire, or 2 wires
-        # redundant is a wire object, connecting to a wire and a node, or another wire
-        
-        found = 0
-
-        for i in range(len(self.elements)):
-
-            if found == 2:
-                break
-
-            if self.elements[i].ID in connected_elements:
-                
-                found += 1
-                print(f"Setting Connections for {self.elements[i].ID}, {self.elements[i].connections}")
-                
-                # Replace value in dictionary or tuple
-                if type(self.elements[i].connections) == dict: # Connected element is a wire
-                                            
-                    for k in self.elements[i].connections:
-                        
-                        v = self.elements[i].connections[k]
-                        
-                        if v == redundant.ID:
-                            self.elements[i].connections[k] = [e for e in connected_elements if e != self.elements[i].ID][0]
-                            print(self.elements[i].connections)
-                
-                else: # Connected element is a node
-                    
-                    for x in range(len(self.elements[i].connections)):
-                        
-
-                        if self.elements[i].connections[x] == redundant.ID:
-                            
-                            self.elements[i].connections[x] = [e for e in connected_elements if e != [self.elements[i].ID]][0]
-                            
-                            print(self.elements[i].connections)
-
-        self.elements.remove(redundant)
-
-        return self.Refine()
-
-    # I've done a think, and I believe that for a wire with only 2 connections, I can model it as a resistor with 0 resistance
-    def ConstructNetlist(self): 
-        
-        print("\n\n\t\tStarting Netlist Construction...\t\t\n\n")
+    def IdentifyNodes(self):
 
         wires: list[Wire] = [  ele for ele in self.elements if ele.type == "wire" ]
         components: list[Element] = [  ele for ele in self.elements if ele.type != "wire" ]
@@ -189,7 +103,7 @@ class CircuitModel:
             return None
 
         for component in components:
-            # Each component needs 2 nodes, one for eeach terminal
+
             for terminal in component.connections:
                 new_node = Node(
                     f"node{len(nodes)+1}",
@@ -209,39 +123,47 @@ class CircuitModel:
                             ele.connections[term] = [e if e != component.ID else n for e in ele.connections[term] ]
 
                 component.connections[terminal] = [n]
-                                                      
+
+        print(self)
+
         for wire in wires:
             for terminal in wire.connections:
-                if len(wire.connections[terminal]) > 1: # If there are 2 or 3 connections at 1 terminal, a node is required
-                    new_node = Node(
-                        f"node{len(nodes)+1}",
-                        [wire.ID, *wire.connections[terminal]]
-                    )
 
-                    if not (n := NodeAlreadyExists(new_node)):
-                        print(f"Node reqired at {wire.ID}: Connections with {wire.connections[terminal]}")
-                        n = new_node.ID
-                        nodes.append(new_node)
-                    
-                    
-                    wire.connections[terminal] = [n]
+                if "node" in wire.connections[terminal][0]:
+                    continue
+
+                new_node = Node(
+                    f"node{len(nodes)+1}",
+                    [wire.ID, *wire.connections[terminal]]
+                )
+
+                if not (n := NodeAlreadyExists(new_node)):
+                    print(f"Node reqired at {wire.ID}: Connections with {wire.connections[terminal]}")
+                    n = new_node.ID
+                    nodes.append(new_node)
+                
+                
+                wire.connections[terminal] = [n]
+
+        self.elements += nodes
+
+    def ConstructNetlist(self): 
         
+        print("\n\n\t\tStarting Netlist Construction...\t\t\n\n")
+
+        self.IdentifyNodes()
+    
         
         for ele in self.elements:
             if type(ele) == Node:
                 continue
 
             for terminal in ele.connections:
-                # print(ele.connections[terminal])
                 ele.connections[terminal] = ele.connections[terminal][0]
-                # print(ele.connections[terminal])
 
+        
 
-        self.elements += nodes
-        self.Refine()
-        # Let's hope this is working correctly
-
-        print("\n\n\n\t\t\t\t AFTER ADDING NODES + REFINEMENT \t\t\t\t\n\n\n")
+        print("\n\n\n\t\t\t\t AFTER ADDING NODES \t\t\t\t\n\n\n")
               
         print(self)
 
@@ -249,3 +171,43 @@ class CircuitModel:
 
         # Every non-node element must be added to the netlist
 
+        for ele in self.elements:
+            if type(ele) == Node:
+                continue
+
+            # print(ele)
+            if type(ele) == Cell:
+                self.spice_cir.V(ele.ID, ele.connections["t1"], ele.connections["t2"], ele.emf)
+                continue
+
+            self.spice_cir.R(ele.ID, ele.connections["t1"], ele.connections["t2"], ele.resistance)
+
+
+        print("\n\n\n\t\t\t\t NETLIST \t\t\t\t\n\n\n")
+
+        print(self.spice_cir)
+    
+
+    def Simulate(self):
+                
+        print("\n\n\n\t\t\t\t SIMULATING (GOOD LUCK)... \t\t\t\t\n\n\n")
+
+        simulator = self.spice_cir.simulator(
+            temperature=25,
+            nominal_temperature=25
+        )
+
+        analysis = simulator.operating_point()
+
+        for ele in [  ele for ele in self.elements if type(ele) in [Cell, Resistor] ]:
+            print(ele)
+            v = []
+            for terminal in ele.connections:
+                v.append(float(analysis[ele.connections[terminal]]))
+
+            # print(v)
+            ele.voltage = round(abs(v[0] - v[1]), 2)
+            
+
+    def Output():
+        pass

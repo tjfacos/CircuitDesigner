@@ -7,7 +7,7 @@ import json
 
 def build(raw):
     
-    # print(raw)
+    print(f"Raw Data Recieved: {raw}")
 
     data = json.loads(raw)
 

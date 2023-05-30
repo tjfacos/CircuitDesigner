@@ -23,3 +23,5 @@ if __name__ == "__main__":
     print(circuit_obj)
 
     circuit_obj.ConstructNetlist()
+    circuit_obj.Simulate()
+    file.SaveFile(circuit_obj.Output())

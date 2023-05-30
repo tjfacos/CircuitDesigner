@@ -17,3 +17,6 @@ def LoadFile():
 
 
     return data
+
+def SaveFile(result_str):
+    pass

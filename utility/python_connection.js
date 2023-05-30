@@ -4,7 +4,7 @@ const fs = require("fs")
 const CallAnalysis = (circuitString) => {
     // let path = process.argv[1]
 
-    console.log(circuitString)
+    // console.log(circuitString)
 
     const isWin = process.platform === "win32"
     let command = `.\\.venv\\scripts\\activate && py main.py`
