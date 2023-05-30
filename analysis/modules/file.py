@@ -1,6 +1,8 @@
 import os
 from TestScripts.demo import DemoData
 
+import json
+
 def LoadFile():
     try:
         PATH = "./temp/circuit.json"
@@ -18,5 +20,8 @@ def LoadFile():
 
     return data
 
-def SaveFile(result_str):
-    pass
+def SaveResults(result_dict):
+    PATH = "./temp/results.json"
+
+    with open(PATH, "w", encoding="utf-8") as f:
+        json.dump(result_dict, f, ensure_ascii=False, indent=4)

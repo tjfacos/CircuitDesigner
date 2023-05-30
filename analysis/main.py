@@ -24,4 +24,7 @@ if __name__ == "__main__":
 
     circuit_obj.ConstructNetlist()
     circuit_obj.Simulate()
-    file.SaveFile(circuit_obj.Output())
+
+    print("\n\n\n\t\t\t\tOutputing Voltage Dictionary... \t\t\t\t\n\n\n")
+
+    file.SaveResults(circuit_obj.Output())

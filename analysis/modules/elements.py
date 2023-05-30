@@ -12,6 +12,7 @@ class Element:
     def __init__(self, ID : str, connections : dict[str, str]) -> None:
         self.type = type(self).__name__.lower()
         self.connections = connections
+        self.voltage = 0.0
         
         self.ID = ID
 
@@ -199,15 +200,22 @@ class CircuitModel:
 
         analysis = simulator.operating_point()
 
-        for ele in [  ele for ele in self.elements if type(ele) in [Cell, Resistor] ]:
+        for ele in [  ele for ele in self.elements if type(ele) in [Cell, Resistor, Bulb] ]:
             print(ele)
             v = []
             for terminal in ele.connections:
                 v.append(float(analysis[ele.connections[terminal]]))
 
-            # print(v)
+            print(v)
+
             ele.voltage = round(abs(v[0] - v[1]), 2)
             
+            print(ele.voltage)
+            
 
-    def Output():
-        pass
+    def Output(self):
+        voltages_dict = {}
+        for ele in [  ele for ele in self.elements if type(ele) in [Cell, Resistor, Bulb] ]:
+            voltages_dict[ele.ID] = ele.voltage
+
+        return voltages_dict
