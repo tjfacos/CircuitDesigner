@@ -99,6 +99,70 @@ class CircuitModel:
         return out
 
 
+    def Refine(self):
+        """This method refines the circuit, by removing unnecessary wires."""
+        
+        changed = False
+
+        redundant: Element = None
+
+        for ele in self.elements:
+            if ele.type != "wire":
+                continue
+
+            connected_elements = [ele.connections["t1"], ele.connections["t2"]]
+
+            # If the element connects 2 nodes, do nothing
+            if "node" in connected_elements[0] and "node" in connected_elements[1]:
+                continue
+
+            redundant = ele
+            
+            break
+
+        if not redundant:
+            return True
+        
+        print(f"{redundant.ID} is redundant")
+        print(f"Connections: {connected_elements}")
+
+        # Identify the 2 connections, and replace
+        found = 0
+        while found < 2:
+            
+            for i in range(len(self.elements)):
+                
+                if self.elements[i].ID in connected_elements:
+                    
+                    found += 1
+
+                    # Replace value in dictionary or tuple
+                    if type(self.elements[i].connections) == dict:
+                        
+                        # print(self.elements[i].connections)
+                        
+                        for k in self.elements[i].connections:
+                            
+                            v = self.elements[i].connections[k]
+
+                            if v == redundant.ID:
+                                self.elements[i].connections[k] = [e for e in connected_elements if e != self.elements[i].ID][0]
+                    
+                    else:
+                        
+                        for x in range(len(self.elements[i].connections)):
+                            
+                            if self.elements[i].connections[x] == redundant.ID:
+                                
+                                self.elements[i].connections[x] = [e for e in connected_elements if e != self.elements[i].ID][0]
+
+
+
+        self.elements.remove(redundant)
+
+        return self.Refine()
+
+
     # I've done a think, and I believe that for a wire with only 2 connections, I can model it as a resistor with 0 resistance
     def ConstructNetlist(self): 
         
@@ -106,7 +170,11 @@ class CircuitModel:
         
         circuit_list = self.elements
 
-        nodes = []
+        cells: list[Cell] = [ ele for ele in circuit_list if ele.type == "cell" ]
+        resistors: list[Resistor] = [ ele for ele in circuit_list if ele.type == "resistor" ]
+        wires: list[Wire] = [  ele for ele in circuit_list if ele.type == "wire" ]
+        bulbs: list[Bulb] = [  ele for ele in circuit_list if ele.type == "bulb" ]
+        nodes: list[Node] = []
 
         def NodeAlreadyExists(new_node : Node):
             """If an identical node is already exists, returns its ID. Otherwise, returns None"""
@@ -116,25 +184,26 @@ class CircuitModel:
                 
             return None
 
-        for ele in circuit_list:
-            for terminal in ele.connections: # If there are 2 or 3 connections at 1 terminal, a node is required
-                new_node = Node(
-                    f"node{len(nodes)+1}",
-                    [ele.ID, *ele.connections[terminal]]
-                )
+        for wire in wires:
+            for terminal in wire.connections:
+                if len(wire.connections[terminal]) > 1: # If there are 2 or 3 connections at 1 terminal, a node is required
+                    new_node = Node(
+                        f"node{len(nodes)+1}",
+                        [wire.ID, *wire.connections[terminal]]
+                    )
 
-                if not (n := NodeAlreadyExists(new_node)):
-                    print(f"Node reqired at {ele.ID}: Connections with {ele.connections[terminal]}")
-                    n = new_node.ID
-                    nodes.append(new_node)
-                
-                
-                ele.connections[terminal] = [n]
+                    if not (n := NodeAlreadyExists(new_node)):
+                        print(f"Node reqired at {wire.ID}: Connections with {wire.connections[terminal]}")
+                        n = new_node.ID
+                        nodes.append(new_node)
+                    
+                    
+                    wire.connections[terminal] = [n]
         
         
-        print("\n\n\n\t\t\t\t AFTER ADDING NODES \t\t\t\t\n\n\n")
-
         # Note: Need to have Components updated with nodes, and then check accuracy (have fun...)
+        
+
 
         for ele in circuit_list:
             if type(ele) == Node:
@@ -142,8 +211,14 @@ class CircuitModel:
             for terminal in ele.connections:
                 ele.connections[terminal] = ele.connections[terminal][0]
 
-        self.elements = circuit_list + nodes
+        self.elements = cells + resistors + wires + bulbs + nodes
+        self.Refine()
 
+        # Additional Nodes and Wires need to be added here
+
+        
+
+        print("\n\n\n\t\t\t\t AFTER ADDING NODES + REFINEMENT \t\t\t\t\n\n\n")
                 
         print(self)
 
