@@ -132,3 +132,4 @@ dist
 test/
 # .vscode/
 activate.sh
+.VSCodeCounter
