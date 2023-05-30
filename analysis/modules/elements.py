@@ -48,13 +48,16 @@ class Node(Element):
     pass
 
 class Wire(Element):
-    pass
+
+    def __init__(self, ID : str, connections: tuple[str]):
+        super().__init__(ID, connections)
+        self.resistance = 0@u_Ω #type: ignore
 
 
 class CircuitModel:
     def __init__(self) -> None:
         self.spice_cir = Circuit("UserCircuit")
-        self.elements = []
+        self.elements: list[Element] = []
 
     def AddCell(self, ID, connections, emf):
         self.elements.append(
@@ -102,21 +105,21 @@ class CircuitModel:
     def Refine(self):
         """This method refines the circuit, by removing unnecessary wires."""
         
-        changed = False
+        # All wires that aren't connecting 2 nodes together are redundant, and should be replaced
 
         redundant: Element = None
 
-        for ele in self.elements:
-            if ele.type != "wire":
-                continue
+        wires: list[Wire] = [  ele for ele in self.elements if ele.type == "wire" ]
 
-            connected_elements = [ele.connections["t1"], ele.connections["t2"]]
+        for wire in wires:
+            
+            connected_elements = [wire.connections["t1"], wire.connections["t2"]]
 
             # If the element connects 2 nodes, do nothing
             if "node" in connected_elements[0] and "node" in connected_elements[1]:
                 continue
 
-            redundant = ele
+            redundant = wire
             
             break
 
@@ -127,53 +130,54 @@ class CircuitModel:
         print(f"Connections: {connected_elements}")
 
         # Identify the 2 connections, and replace
+        # At this point, wires can either be connecting 2 nodes, a node and a wire, or 2 wires
+        # redundant is a wire object, connecting to a wire and a node, or another wire
+        
         found = 0
-        while found < 2:
-            
-            for i in range(len(self.elements)):
+
+        for i in range(len(self.elements)):
+
+            if found == 2:
+                break
+
+            if self.elements[i].ID in connected_elements:
                 
-                if self.elements[i].ID in connected_elements:
+                found += 1
+                print(f"Setting Connections for {self.elements[i].ID}, {self.elements[i].connections}")
+                
+                # Replace value in dictionary or tuple
+                if type(self.elements[i].connections) == dict: # Connected element is a wire
+                                            
+                    for k in self.elements[i].connections:
+                        
+                        v = self.elements[i].connections[k]
+                        
+                        if v == redundant.ID:
+                            self.elements[i].connections[k] = [e for e in connected_elements if e != self.elements[i].ID][0]
+                            print(self.elements[i].connections)
+                
+                else: # Connected element is a node
                     
-                    found += 1
+                    for x in range(len(self.elements[i].connections)):
+                        
 
-                    # Replace value in dictionary or tuple
-                    if type(self.elements[i].connections) == dict:
-                        
-                        # print(self.elements[i].connections)
-                        
-                        for k in self.elements[i].connections:
+                        if self.elements[i].connections[x] == redundant.ID:
                             
-                            v = self.elements[i].connections[k]
-
-                            if v == redundant.ID:
-                                self.elements[i].connections[k] = [e for e in connected_elements if e != self.elements[i].ID][0]
-                    
-                    else:
-                        
-                        for x in range(len(self.elements[i].connections)):
+                            self.elements[i].connections[x] = [e for e in connected_elements if e != [self.elements[i].ID]][0]
                             
-                            if self.elements[i].connections[x] == redundant.ID:
-                                
-                                self.elements[i].connections[x] = [e for e in connected_elements if e != self.elements[i].ID][0]
-
-
+                            print(self.elements[i].connections)
 
         self.elements.remove(redundant)
 
         return self.Refine()
 
-
     # I've done a think, and I believe that for a wire with only 2 connections, I can model it as a resistor with 0 resistance
     def ConstructNetlist(self): 
         
         print("\n\n\t\tStarting Netlist Construction...\t\t\n\n")
-        
-        circuit_list = self.elements
 
-        cells: list[Cell] = [ ele for ele in circuit_list if ele.type == "cell" ]
-        resistors: list[Resistor] = [ ele for ele in circuit_list if ele.type == "resistor" ]
-        wires: list[Wire] = [  ele for ele in circuit_list if ele.type == "wire" ]
-        bulbs: list[Bulb] = [  ele for ele in circuit_list if ele.type == "bulb" ]
+        wires: list[Wire] = [  ele for ele in self.elements if ele.type == "wire" ]
+        components: list[Element] = [  ele for ele in self.elements if ele.type != "wire" ]
         nodes: list[Node] = []
 
         def NodeAlreadyExists(new_node : Node):
@@ -184,6 +188,28 @@ class CircuitModel:
                 
             return None
 
+        for component in components:
+            # Each component needs 2 nodes, one for eeach terminal
+            for terminal in component.connections:
+                new_node = Node(
+                    f"node{len(nodes)+1}",
+                    [component.ID, *component.connections[terminal]]
+                )
+
+                if not (n := NodeAlreadyExists(new_node)):
+                    print(f"Node reqired at {component.ID}: Connections with {component.connections[terminal]}")
+                    n = new_node.ID
+                    nodes.append(new_node)
+                
+                elements_to_change = component.connections[terminal]
+
+                for ele in self.elements:
+                    if ele.ID in elements_to_change:
+                        for term in ele.connections:
+                            ele.connections[term] = [e if e != component.ID else n for e in ele.connections[term] ]
+
+                component.connections[terminal] = [n]
+                                                      
         for wire in wires:
             for terminal in wire.connections:
                 if len(wire.connections[terminal]) > 1: # If there are 2 or 3 connections at 1 terminal, a node is required
@@ -201,24 +227,25 @@ class CircuitModel:
                     wire.connections[terminal] = [n]
         
         
-        # Note: Need to have Components updated with nodes, and then check accuracy (have fun...)
-        
-
-
-        for ele in circuit_list:
+        for ele in self.elements:
             if type(ele) == Node:
                 continue
+
             for terminal in ele.connections:
+                # print(ele.connections[terminal])
                 ele.connections[terminal] = ele.connections[terminal][0]
+                # print(ele.connections[terminal])
 
-        self.elements = cells + resistors + wires + bulbs + nodes
+
+        self.elements += nodes
         self.Refine()
-
-        # Additional Nodes and Wires need to be added here
-
-        
+        # Let's hope this is working correctly
 
         print("\n\n\n\t\t\t\t AFTER ADDING NODES + REFINEMENT \t\t\t\t\n\n\n")
-                
+              
         print(self)
+
+        print("\n\n\n\t\t\t\t CONSTRUCTING NETLIST \t\t\t\t\n\n\n")
+
+        # Every non-node element must be added to the netlist
 
