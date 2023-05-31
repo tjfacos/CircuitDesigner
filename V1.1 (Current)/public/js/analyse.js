@@ -1,7 +1,33 @@
 const Simulate = () => {
     // Circuit validation
 
-    encodeCircuit()
+    let valid = true
+    let error = ""
+
+    if (componentMap.size == 0) {
+        error = "There are no components!"
+        valid = false
+    }
+
+    componentMap.forEach((comp, key) => {
+        for (terminal in comp.connections) {
+            if (comp.connections[terminal].length == 0) {
+                error = error.concat(`${key} isn't connected\n`)
+                valid = false
+                return
+            }
+        }
+    })
+
+
+
+    if (valid) {encodeCircuit()}
+    else{
+        api.NotifyUser({
+                title: "Can't Simulate Circuit!",
+                body: error
+        })
+    }
 }
 
 
@@ -88,3 +114,5 @@ const CloseMetrics = () => {
     })
 
 }
+
+

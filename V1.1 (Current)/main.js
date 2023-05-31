@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, MenuItem, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, Menu, MenuItem, ipcMain, dialog, globalShortcut,Notification } = require('electron')
 const path = require('path')
 
 // Local Dependencies
@@ -80,6 +80,14 @@ const AddHandlers = (mainWindow) => {
   
   ipcMain.handle("SaveDesign", (_, data) => {
     SaveDesign(data, mainWindow)
+  })
+
+  ipcMain.handle("NotifyUser", (_, body) => {
+    new Notification(body).show()
+  })
+
+  globalShortcut.register('Ctrl+f5', () => {
+    mainWindow.webContents.executeJavaScript("Simulate()")
   })
 
 } 

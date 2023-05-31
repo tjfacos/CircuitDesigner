@@ -35,7 +35,12 @@ const SaveCircuit = () => {
 
         api.SaveDesign(data) 
     
-    } 
+    } else {
+        api.NotifyUser({
+            title: "Can't Save Circuit!",
+            body: "Circuit has no content"
+        })
+    }
 }
 
 api.HandleLoad((_, data_string) => {
