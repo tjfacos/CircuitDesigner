@@ -32,3 +32,7 @@
 .dialogText {
     color: whitesmoke;
 }
+
+h2.dialogText {
+    font-size: 1.2rem;
+}

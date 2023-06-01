@@ -40,12 +40,6 @@ const createWindow = () => {
           LoadDesign(mainWindow) 
         }
       },
-      {
-      "click": () => {
-        mainWindow.webContents.executeJavaScript("openHelpDialog()")
-      },
-      "label": "Help"
-      }
     ]
   })
   
@@ -53,12 +47,20 @@ const createWindow = () => {
     "click": () => {
       mainWindow.webContents.openDevTools()
     },
-    "label": "DevTools",
+    // "label": "DevTools",
     "accelerator": "Ctrl+Shift+I"
+  })
+  
+  helpItem = new MenuItem({
+    "click": () => {
+      mainWindow.webContents.executeJavaScript("openHelpDialog()")
+    },
+    "label": "Help"    
   })
 
   menu.append(fileItem)
   menu.append(devToolsItem)
+  menu.append(helpItem)
 
   mainWindow.maximize()
   mainWindow.loadFile('public/index.html')
