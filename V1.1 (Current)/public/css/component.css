@@ -117,3 +117,10 @@
     height: 10px;
     width: 10px;
 }
+
+.bulb-glow {
+    background-color: yellow;
+    /* opacity: 0.5; */
+    border-radius: 50%;
+    z-index: -0.5;
+}

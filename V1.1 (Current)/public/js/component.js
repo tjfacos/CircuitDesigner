@@ -243,19 +243,27 @@ class Component {
             document.getElementById("V_span").innerText = this.voltage
             document.getElementById("I_span").innerText = this.current
             document.getElementById("R_span").innerText = this.resistance
+            document.getElementById("P_span").innerText = Math.round((this.voltage * this.current)*100) / 100
         }
         const remove_values = () => {
             document.getElementById("V_span").innerText = "  -  "
             document.getElementById("I_span").innerText = "  -  "
             document.getElementById("R_span").innerText = "  -  "
+            document.getElementById("P_span").innerText = "  -  "
         }
 
         if (on) {
             element.onmousemove = add_values
             element.onmouseleave = remove_values
+
+            if (this.current > 0 && this.type == "bulb") {
+                this.setBulbBrightness()
+            }
+
         } else {
             document.removeEventListener("mousemove", add_values)
             document.removeEventListener("mouseleave", add_values)
+            this.div.removeChild(this.div.lastChild)
         }
     }
 
@@ -346,6 +354,24 @@ class LoadComponent extends Component {
         if (!this.resistance){
             this.resistance = 10.0;
         }
+    }
+
+    setBulbBrightness() {
+        let glow = document.createElement("div")
+
+        glow.style.position = "absolute"
+        glow.style.height = glow.style.width = "50px"
+        glow.style.top = "5px"
+        glow.style.left = "35px"
+        glow.classList.add("bulb-glow")
+
+        let brightness = (this.current * this.voltage) * 0.8 / 5
+        
+        if (brightness > 0.8){ brightness = 0.8 }
+
+        glow.style.opacity = `${brightness}`
+
+        this.div.append(glow)
     }
 }
 

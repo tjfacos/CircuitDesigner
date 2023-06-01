@@ -33,24 +33,24 @@ const ToggleEditor = (component, state) => {
 
     if (dialog.classList.contains("hidden")) {
         
-        // console.log("CALLED")
-
         document.getElementById("wizard-component-name").innerText = component.div.id
-
-
-        if (!(component.div.classList.contains("cell"))) {
-           emfField.style.display = "none" 
-        } else {
-            emfField.value = component.emf
-        }
-
+        
         if (component.div.classList.contains("wire")) {
             resistanceField.style.display = "none"
             dialog.style.height = "15%"
             document.getElementById("rotate-button").style.display = "none"
         } else {
+            resistanceField.style.display = "block"
             resistanceField.value = component.resistance
         }
+
+        if (!(component.div.classList.contains("cell"))) {
+           emfField.style.display = "none" 
+        } else {
+            emfField.value = component.emf
+            resistanceField.style.display = "none"
+        }
+
         
     } 
     
