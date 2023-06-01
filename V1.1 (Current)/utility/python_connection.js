@@ -9,9 +9,14 @@ const CallAnalysis = (circuitString, window) => {
     let command = `.\\.venv\\scripts\\activate && py main.py`
     
     if (!isWin){
-        // Construct command for linux
+        command = `
+        python3 main.py
+        `
     }
 
+    if (!fs.existsSync("./analysis/temp")){
+        fs.mkdirSync("./analysis/temp");
+    }
 
     fs.writeFile("./analysis/temp/circuit.json", circuitString, () => {
         const python = exec(command, {cwd: "./analysis"}, (err, stdout, stderr) => {
