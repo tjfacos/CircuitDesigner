@@ -24,7 +24,10 @@ const createWindow = () => {
     "submenu": [
       {
         "label": "New Design",
-        "accelerator": "Ctrl+N"
+        "accelerator": "Ctrl+N",
+        "click": () => {
+          mainWindow.webContents.send("new-file")
+        }
       },
       {
         "label": "Save Design",

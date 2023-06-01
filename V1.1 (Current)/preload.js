@@ -11,5 +11,6 @@ contextBridge.exposeInMainWorld('api', {
   NotifyUser: (body) => { return ipcRenderer.invoke("NotifyUser", body) },
   GetDesign: () => { return ipcRenderer.invoke("LoadDesign") },
   HandleLoad: (callback) => ipcRenderer.on("loaded-file", callback),
+  HandleNew: (callback) => ipcRenderer.on("new-file", callback),
   ReceiveAnalysis: (callback) => ipcRenderer.on("receive-analysis", callback)
 })

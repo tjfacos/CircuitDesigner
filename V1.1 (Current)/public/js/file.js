@@ -68,7 +68,33 @@ api.HandleLoad((_, data_string) => {
 
     })
 
-
-
-
 })
+
+api.HandleNew((_) => {
+    NewDesign()
+})
+
+const NewDesign = () => {
+    
+    let cont = true
+    
+    if (componentMap.size > 0){
+        cont = confirm("Are you sure you want to start a new design? Make sure you've saved anything you want to keep")
+    }
+    
+    if (cont)
+    {
+        
+        ComponentCounters = {
+            "resistor": 1,
+            "bulb": 1,
+            "cell": 1,
+            "wire": 1
+        };
+    
+        componentMap = new Map()
+    
+        document.getElementById("component-container").innerHTML = ""
+    }
+    
+}
