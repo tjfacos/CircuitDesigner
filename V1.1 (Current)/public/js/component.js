@@ -240,12 +240,14 @@ class Component {
         let element = this.div
         
         const add_values = () => {
+            document.getElementById("name_span").innerText = this.div.id
             document.getElementById("V_span").innerText = this.voltage
             document.getElementById("I_span").innerText = this.current
             document.getElementById("R_span").innerText = this.resistance
             document.getElementById("P_span").innerText = Math.round((this.voltage * this.current)*100) / 100
         }
         const remove_values = () => {
+            document.getElementById("name_span").innerText = "  -  "
             document.getElementById("V_span").innerText = "  -  "
             document.getElementById("I_span").innerText = "  -  "
             document.getElementById("R_span").innerText = "  -  "
@@ -263,7 +265,7 @@ class Component {
         } else {
             document.removeEventListener("mousemove", add_values)
             document.removeEventListener("mouseleave", add_values)
-            this.div.removeChild(this.div.lastChild)
+            if (this.type == "bulb") { this.div.removeChild(this.div.lastChild) }
         }
     }
 
