@@ -21,7 +21,7 @@ const CallAnalysis = (circuitString, window) => {
     fs.writeFile("./analysis/temp/circuit.json", circuitString, () => {
         const python = exec(command, {cwd: "./analysis"}, (err, stdout, stderr) => {
             console.log(`stdout: ${stdout}`)
-            console.log(`stderr: ${stderr}`)
+            // console.log(`stderr: ${stderr}`)
             console.log(`err: ${err}`)
             
             if (err) {
