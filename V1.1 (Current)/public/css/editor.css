@@ -1,3 +1,9 @@
+/* 
+This file styles the controls used in the app, including buttons, 
+the editor wizard (bottom righ when a component is selected), which allows users to edit component properties. 
+and metrics wizard (bottom left), which displays the simulation results.
+*/
+
 .control-button {
     
     /* display: none; */

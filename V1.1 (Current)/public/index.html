@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/dialog.css">
     
     
-    <!-- Links -->
+    <!-- Links to Favicon (seen on the OS toolbar, and on the window), as well as Google Fonts-->
     <link rel="icon" href="../assets/icons/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Electrolize">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lexend">
@@ -29,6 +29,7 @@
       <canvas id="cnv"></canvas>
       
       <!-- Components are created within this container div -->
+      <!-- This is also where the HTML visual representation of the circuit can be accessed for saving and loading -->
       <div id="component-container"></div> 
     </div>
     
@@ -37,11 +38,12 @@
       
       <div id="components-list">
         <div id="logo">
+          <!-- Logo and Program Name at the top of the toolbar -->
           <img id="logo-img" src="../assets/icons/circuit.png" alt="Electronic Circuit" draggable="false">
           <span class="itemText" id="AppName">Electronic Circuit Simulator</span>
         </div>
         
-        
+        <!-- Each component on the toolbar has its image and name -->
         <div class="component-item" id="resistor-button" ondblclick=" addComponent('resistor') ">
           <img class="component-icon" src="../assets/components/resistor.svg" alt="Resistor" draggable="false">
           <span class="itemText">Resistor</span>
@@ -62,19 +64,14 @@
           <span class="itemText">Wire</span>
         </div>
         
-        <!-- Add Extra Components Here -->
-        
-
-
-        
+        <!-- In future, I can expand the list of components here -->
         
       </div>
-      
-      <!-- You could add Settings/ Light/Dark mode button etc. in here at the bottom of the div -->
-      
-      
+            
     </div>
     
+    <!-- Help Dialog -->
+
     <dialog id="help-dialog">
       <button class="control-button" id="help-close-button" onclick="closeHelpDialog()">
         <img src="../assets/graphics/close.svg" alt="Close Window">
@@ -98,6 +95,8 @@
     </dialog>
     
     
+    <!-- Editor Wizard, where properties of every component can be loaded and edited -->
+
     <div id="editor-wizard"class="hidden">
       
       <h1 id="wizard-component-name">Test</h1>
@@ -109,8 +108,6 @@
         oninput="setEMF()"
       >
       
-      <p id="wizard-text-output"></p>
-      
       <button class="control-button" id="rotate-button" onclick="RotateComponent()">
         <img src="../assets/graphics/rotate.svg" alt="Rotate 90deg">
       </button>
@@ -121,6 +118,8 @@
 
     </div>
     
+    <!-- Metrics Wizard, where the results of the simulation are loaded -->
+
     <div id="metrics-wizard">
       
       <button class="control-button" id="close-metrics-btn" onclick="CloseMetrics()" title="Close">
@@ -139,17 +138,17 @@
 
 
 
+    <!-- This overlay exists to turn the screen blue when new components are dragged onto the screen -->
+
     <div id="overlay"></div>
     
+    <!-- Simulate Button - starts the circuit simulation -->
+
     <button class="control-button" title="Simulate" id="simulate-btn" onclick="Simulate()">
       <img src="../assets/graphics/start.svg" alt="Start Simulation">
     </button>
-
-    <!-- <button style="position: fixed; right: 0px; top: 100px" onclick="ToggleEditor()">ToggleWizard</button> -->
     
-    <!-- NodeJS -->
-    
-    <!-- JavaScript -->
+    <!-- JavaScript File Links -->
     <script type="text/javascript" src="js/grid.js"></script>
     <script type="text/javascript" src="js/initialise.js"></script>
     <script type="text/javascript" src="js/component.js"></script>
@@ -157,9 +156,7 @@
     <script type="text/javascript" src="js/connection.js"></script>
     <script type="text/javascript" src="js/analyse.js"></script>
     <script type="text/javascript" src="js/file.js"></script>
-    
-    
+        
   </body>
   </html>
   
-

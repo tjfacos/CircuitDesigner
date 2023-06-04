@@ -1,3 +1,9 @@
+/* 
+This stylesheet establishes basic style rules for the app UI.
+This includes CSS variables that can be referenced in any other style rules, the base font,
+removing body padding and margin, etc.  
+*/
+
 :root 
 {
     --background: #272822;
