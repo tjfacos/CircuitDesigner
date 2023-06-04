@@ -1,10 +1,10 @@
-# CircuitDesignerElectron
+# CircuitDesigner
 
 ## Summary
 
 This is the repository for my EPQ Artefact.
 
-It is a circuit simulator app for designing linear circuits, using web technologies to inteface with a C++ program implementing SPICE
+It is a circuit simulator app for designing linear circuits, using web technologies to inteface with a Python program implementing SPICE, more specifically the PySpice library.
 
 It is powered and implemented with:
 
