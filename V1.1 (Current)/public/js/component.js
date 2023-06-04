@@ -1,5 +1,7 @@
+// Declare the componentMap, the data type where all components are stored
 var componentMap = new Map()
 
+// ComponentCounters are used to set the names for each component, so they are all unique
 var ComponentCounters = {
     "resistor": 1,
     "bulb": 1,
@@ -7,11 +9,23 @@ var ComponentCounters = {
     "wire": 1
 };
 
+// This variable tracks which element on the screen is selected
 var SelectedElement = null;
 
+/*
+
+The Component Class is the base class for all standard component classes, from which the component objects are instantiated
+Classes are effectivly blueprints that are used to created objects
+
+*/
+
+
 class Component {
+    
+    // This method is called whenever a component (like a cell or resistor) is added to the design
     constructor (type, load_data) {
         
+        // Set properties, including a HTML DIV, representing the component, to add to the screen
         this.type = type;
         this.div = document.createElement("DIV")
         this.connections = []
@@ -22,7 +36,11 @@ class Component {
         this.voltage = 0
         this.current = 0
 
+        // The div attribute of the object contains its name: its type, as well a number representing which element of that type it is
+        // For example, the second resistor in a design is called resistor2
         this.div.id = type + ComponentCounters[type]++;
+        // Classes are used to style each component, so a general component class, 
+        // as well as a class for that type of component, e.g. cell, is added
         this.div.classList.add("component");
         this.div.classList.add(type);
         
@@ -30,9 +48,11 @@ class Component {
         this.selected = false;
         this.placed = false;
         
+        // If load data is provided (whenever a design is loaded from a file), 
+        // The initial state must be set, using the load data passed into the constructor
+        // Otherwise, a procedure of adding the component icon to the div, and configuring it for the canvas can be followed
         if (!load_data) {
             this.addIcon();
-            
             this.addToCanvas();
         } else {
             this.setFromLoad(load_data);
@@ -40,99 +60,132 @@ class Component {
         
     }
     
+    // This method sets the objects state using loaded data
     setFromLoad(load_data) {
         console.log(load_data)
 
+        // Set properties from loaded data
         this.connections = load_data.connections
         this.height = load_data.height
         this.width = load_data.width
         this.portCoords = load_data.portCoords
+
+        // Identify which HTML element on the screen represents this object
         this.div = document.getElementById(load_data.id)
         this.ports = Array.from(document.getElementById(load_data.id).getElementsByClassName("port"))
 
+        // Set type specific properties
         if (load_data.type == "cell") {
             this.emf = load_data.emf
         } else {
             this.resistance = load_data.resistance
         }
 
+        // Add standard event handlers for movement and control
         this.addHandlers()
-
 
     }
 
+    // This method calculates the coordinates on the grid of the terminals/ports 
+    // (points where the object connects to other elements in the circuit)
     setPortCoords() {
+        // Get x-y coordinates of the component itself, on the screen
         var x = this.div.offsetLeft
         var y = this.div.offsetTop
         
+        // Find the width and height of the component on the screen, and calculate the coodinates for the centre of the element
         let width = this.width
         let height = this.height
         let centre = [x+width/2, y+height/2]
 
-        // console.log(`Centre: ${centre}`)
-        // console.log(`${this.div.id}: ${width} ${height}, [${x}, ${y}]`)
-        
-        let port1 = [x+width/2, y+height/2]
-        let port2 = [x+width/2, y+height/2]
+        // Set initial positions of the ports to be the centre
+        let port1 = centre
+        let port2 = centre
+
+
+        // If the component is rotated (vertical orientation)
+            // Subtract half a width to the y-coordinate first port, and add half from the second
+        // Otherwise (horizontal), do the same but for the x-coordinates
 
         if (this.div.classList.contains("rotated")) {
-            // console.log("Vertical")
             port1[1] -= width/2
             port2[1] += width/2
         } else {
-            // console.log("Horizontal")
             port1[0] -= width/2
             port2[0] += width/2
         }
         
+        // Set the portCoords attibute to reflect these calculations
         this.portCoords = [port1, port2]
 
-        // console.log(this.portCoords)
-        
+        // Find the connected elements
         this.SetConnections()
 
     }
 
+    /* NB: For extra clarity: 
+        An element on the screen refers to a HTML element, usually a div, present in the document 
+        A circuit element refers to a part of the circuit, such as a resistor, cell, or wire
+    */
+
+    // This is the initial procedure to place the element on the screen
     addToCanvas() {
+        
+        // Add the component's HTML div to the component-container
         let element = this.div
         document.getElementById("component-container").append(element);
+        
+        // Add ports (used as reference points to connect the component to other circuit elements)
         this.addPorts();
         var overlay = document.getElementById("overlay")
         
-        // Start Placement
+        // Start Placement Procedure
+        // Set CSS classes to show that the component is being added (blue outline, drop shadow etc), as well as make the blue overlay visible 
         overlay.style.display = "block"
         element.classList.add("isBeingAdded")
+
+        // An event listener is used to track mouse movements, and the position of the element the screen is updated to track that position
         document.onmousemove = (e) => {
             
             let x = e.pageX;
             let y = e.pageY;
             
+            // Lock coordinates to the grid. This makes them a multiple of 30, as each square on the grid is 30 x 30 px
+
             let lockedCoords = this.placeToGrid(x , y);
             x = lockedCoords[0];
             y = lockedCoords[1];
             
+            // Set element position to the locked coordinates, adjusted so the mouse pointer is in the centre of the component, rather than the top left
+            // This involves setting both coordinates and subtracting half the width//height of the HTML element as appropriate
             element.style.left = (x-element.clientWidth/2) + "px";
             element.style.top = (y-element.clientHeight/2) + "px";
         }
         
+        // When the user clicks on the position, set the component in that position
         document.onmousedown = (e) => {
-            // console.log("Called")
             if (!(document.getElementById("toolbar").contains(e.target))) {
                 console.log("placed")
+                // Remove overlay and placement styling
                 overlay.style.display = "none";
                 element.classList.remove("isBeingAdded")
+
+                // Remove event listeners
                 document.onmousemove = () => {}
                 document.onmousedown = () => {};
                 
                 this.width = Math.round(this.div.offsetWidth / 10) * 10
                 this.height = Math.round(this.div.offsetHeight / 10) * 10
                 
+                // Set the port coordinates of every component. 
+                // This also evaluates the connections between components in the circuit
                 SetAllPortCoords()
                 this.addHandlers();
             }
         }
         
     }
+    
     
     addIcon() {
         let element = this.div;
@@ -146,8 +199,7 @@ class Component {
         element.append(img)
     }
     
-    addHandlers(){
-        // this.setPortCoords();
+    addHandlers() {
         this.addMovement()
         this.addControls();
     }
@@ -163,8 +215,6 @@ class Component {
             this.div.append(port)
             
             console.log(`i: ${i}`)
-            // console.log(this.div.style.height/2 - port.clientHeight/2)
-            // console.log(this.div.style.width * i)
             
             port.style.position = "absolute"
             port.style.top = (this.div.clientHeight/2 - port.clientHeight/2) + "px"
@@ -270,15 +320,6 @@ class Component {
     }
 
 
-
-
-
-
-
-
-
-
-    
     rotate() {
         this.div.classList.toggle("rotated")
         SetAllPortCoords()
@@ -377,11 +418,10 @@ class LoadComponent extends Component {
     }
 }
 
-// In future, an AC Source and logic for AC may be included. But not for now ...
-
 const addComponent = (type, fromLoad) => {
 
     let component;
+
     if (type == "cell") {
         component = new Cell(type, fromLoad);
     } else if (type == "wire") {
@@ -452,7 +492,6 @@ const RotateComponent = () => {
 const SetAllPortCoords = () => {
     console.log("Setting all Port Coords...")
     componentMap.forEach((item) => {
-        // console.log(item.div.id)
         if (!item.div.id.includes("wire")) item.setPortCoords()
     })
 }

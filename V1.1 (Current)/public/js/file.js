@@ -50,10 +50,13 @@ const SaveCircuit = () => {
 // This defines the function to be called when the main process sends loaded circuit data to the renderer process
 
 api.HandleLoad((_, data_string) => {
+    
+    // parses the data from a string to a JavaScript Object
     let data = JSON.parse(data_string)
     
     data[1] = JSON.parse(data[1])
     
+    // Set the component-container contents to reflect the loaded design
     document.getElementById("component-container").innerHTML = data[0]
     
     ComponentCounters = {
@@ -63,6 +66,7 @@ api.HandleLoad((_, data_string) => {
         "wire": 1
     };
 
+    // reset componentMap
     componentMap = new Map()
     let componentData = data[1]
     
@@ -70,6 +74,8 @@ api.HandleLoad((_, data_string) => {
         let dataEntry = componentData[key]
         dataEntry.id = key
         
+        // For each entry in the saved file, representing a component in the design, add a new component,
+        // using the loaded properties as its initial state
         addComponentFromLoad(dataEntry)
 
     })
@@ -81,7 +87,7 @@ api.HandleNew((_) => {
     NewDesign()
 })
 
-// This first confirms the user want to clear the scree, then resets the component counters, component-container, and componentMap to initial condition 
+// This first confirms the user want to clear the screen, then resets the component counters, component-container, and componentMap to initial condition 
 const NewDesign = () => {
     
     let cont = true
@@ -90,6 +96,7 @@ const NewDesign = () => {
         cont = confirm("Are you sure you want to start a new design? Make sure you've saved anything you want to keep")
     }
     
+    // Only continue if the user has confirmed they wish to clear the screen, and start a new design
     if (cont)
     {
         
@@ -100,6 +107,9 @@ const NewDesign = () => {
             "wire": 1
         };
     
+        // Reset componentMap (where the coomponent objects for the circuit are stored), 
+        // and the component-container (where they exist on the visible page)
+        
         componentMap = new Map()
     
         document.getElementById("component-container").innerHTML = ""

@@ -1,5 +1,9 @@
 /* 
 This stylesheet styles HTML elements that are part of representing components on the screen, such as cells, resistors, wires, bulbs etc.
+
+It also contains styles for classes that are procedurally added to component elements on the screen.
+
+E.g. when a component is rotated, the rotated class is added to its classList, and the .component.rotated syle below rotates the HTML element 90 degrees
 */
 
 
@@ -58,7 +62,7 @@ This stylesheet styles HTML elements that are part of representing components on
     transform: rotate(90deg);
 }
 
-/* Resistor Styles are default. Use .resistor to override them*/
+/* Resistor Styles are default*/
 
 
 /* Bulb Styles */
