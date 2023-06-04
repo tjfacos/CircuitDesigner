@@ -1,3 +1,5 @@
+
+// Method that draws the background grid, 3 times the size of the screen in the X and Y directions
 const drawGrid = () => {
     var cnv = document.getElementById("cnv");
     cnv.width = window.innerWidth * 3;
@@ -14,6 +16,8 @@ const drawGrid = () => {
     let iWidth = cnv.width;
     let iHeight = cnv.height;
 
+    // HTML allows me to draw onto the canvas by effectively moving a pen around the screen
+
     let ctx = cnv.getContext('2d');
 
     ctx.strokeStyle = lineOptions.colour;
@@ -28,14 +32,17 @@ const drawGrid = () => {
 
     iCount = Math.floor(iWidth / lineOptions.separation);
 
+    // Draw vertical lines, moving from the bottom to top of the screen for each stroke
+    
     for (i = 1; i <= iCount; i++) {
         x = (i * lineOptions.separation);
         ctx.moveTo(x, 0);
         ctx.lineTo(x, iHeight);
         ctx.stroke();
     }
-
-
+    
+    
+    // Draw horizontal lines, moving from left to right
     iCount = Math.floor(iHeight / lineOptions.separation);
 
     for (i = 1; i <= iCount; i++) {

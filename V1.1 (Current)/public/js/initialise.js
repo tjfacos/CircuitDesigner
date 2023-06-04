@@ -1,3 +1,6 @@
+// Draws the grid in the background, and sets event listers
+// For the rotate, delete, and wire keyboard shortcuts
+
 const initialise = () => {
     drawGrid();
 

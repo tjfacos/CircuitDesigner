@@ -7,13 +7,8 @@ const closeHelpDialog = () => {
 }
 
 const ToggleEditor = (component, state) => {
-    // If the editor is not yet displayed, display it
-    // Set the name to the selected component
-    // Make sure emf is hidden unless component is a cell
-    // Add event Listeners to change the value of the resistance/emf on change
-    // Make sure all values are numbers
-
-    // If the editor is displayed, close it
+    // This method sets the editor to be either visible or hidden
+    // When visible, it loads the name or the component, as well as its properties to the screen
     
     let dialog = document.getElementById("editor-wizard")
     let emfField = document.getElementById("emf-field")
@@ -64,14 +59,11 @@ const ToggleEditor = (component, state) => {
     }
 
 }
+// For these methods, the program loops through, and finds the component in the map which is selected (has item.selected == true)
+// Then performs the task
 
 const setResistance = () => {
     let input = document.getElementById("resistance-field").value
-    // if (document.getElementById("emf-field").value === "" || document.getElementById("resistance-field").value === "") {
-    //     document.getElementById("wizard-text-output").innerText = "Numbers only!!!"
-    // } else {
-    //     document.getElementById("wizard-text-output").innerText = ""
-    // }
 
     componentMap.forEach(async (item, key) => {
         if (item.selected) {
@@ -82,11 +74,6 @@ const setResistance = () => {
 
 const setEMF = () => {
     let input = document.getElementById("emf-field").value
-    // if (document.getElementById("emf-field").value === "" || document.getElementById("resistance-field").value === "") {
-    //     document.getElementById("wizard-text-output").innerText = "Numbers only!!!"
-    // } else {
-    //     document.getElementById("wizard-text-output").innerText = ""
-    // }
 
     componentMap.forEach(async (item, key) => {
         if (item.selected) {
