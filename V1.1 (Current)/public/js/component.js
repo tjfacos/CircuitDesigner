@@ -185,11 +185,14 @@ class Component {
         
     }
     
-    
+    // Adds the component Icon to the HTML div
     addIcon() {
         let element = this.div;
         let img = document.createElement("img");
+        // Component icons are stored in the assets/components directory
+        // The program uses the type of the component to construct the file path to the relevant icon
         let svgURL = `../assets/components/${element.classList[1]}.svg`;
+        // The image element is then given this path as a source, and is then added to the element on the screen
         img.src = svgURL;
         img.id = element.id + "-icon";
         img.alt = element.id;
@@ -197,23 +200,22 @@ class Component {
         
         element.append(img)
     }
-    
+    // This is a convenience method, to call the addMovement and addControls methods, both of which
+    // implement handlers on the HTML element
     addHandlers() {
         this.addMovement()
         this.addControls();
     }
-    
+    // This adds HTML ports to the element, which are used as reference points
     addPorts() {
         
         const createPort = (i) => {
             
-            
+            // Function to create a port. The parameter 'i' indicates wether it is drawn on the left or the right     
             let port = document.createElement("div")
             port.classList.add("joint")
             port.classList.add("port")
             this.div.append(port)
-            
-            console.log(`i: ${i}`)
             
             port.style.position = "absolute"
             port.style.top = (this.div.clientHeight/2 - port.clientHeight/2) + "px"
@@ -222,19 +224,25 @@ class Component {
             return port
         }
         
+        // Creates a port for i = 0 (left side) and i = 1 (right side)
         for (var i = 0; i < 2; i++){ this.ports.push( createPort(i) ) }
         
                 
         
     }
     
+    // This method adds event handers, that allow the user to drag the HTML element on the screen
     addMovement() {
         let element = this.div;
+        // The div listens for the user clicking on it
         element.addEventListener("mousedown", () => {
             element.style.position = "absolute";
+            // This element (for this object) is now the selectedElement
             SelectedElement = element;
             
             
+            // As the mouse moves, the program gets the mouse position (x and y) on the page, locks them to the closest grid position, 
+            // and then moves the SelectedElement so its centre is in that spot on the grid
             document.onmousemove = (e) => {
                 
                 let x = e.pageX;
@@ -247,7 +255,8 @@ class Component {
                 SelectedElement.style.left = (x-SelectedElement.clientWidth/2) + "px";
                 SelectedElement.style.top = (y-SelectedElement.clientHeight/2) + "px";
             }   
-            
+            // When the user stops dragging, remove redundant event listeners (by setting them to empty functions), 
+            //deselect the element, and then establish connections again
             document.onmouseup = () => {
                 document.onmousemove = (e) => {}
                 SelectedElement = null;
@@ -260,6 +269,7 @@ class Component {
         
     }
 
+    // This method opens the editor wizard, with the objects data, when the user double-clicks on the element
     addControls () {
         
         console.log("Adding controls...")
@@ -271,10 +281,14 @@ class Component {
         element.addEventListener("dblclick", () => {
             console.log(`${element.id} selected...`)
             element.classList.toggle("selectedComponent")
+            // Toggle the editor wizrd to on, and pass this object to it, so its values can be loaded into it
             ToggleEditor(this, "on")
+            // This objet is now in the selected state
             this.selected = true;
         })
 
+        // When the user clicks out of the element (anywhere other tha the editor wizard or element itself),
+        // deselect element and hide the editor
         document.addEventListener('click', (e) => {
             if (!( element.contains(e.target) || wizard.contains(e.target)) && this.selected ) {
                 element.classList.toggle("selectedComponent")
@@ -284,11 +298,13 @@ class Component {
         })
     }
 
+    // This method enables and disables metrics mode
     EnableMetricsMode(on) {
         
         let element = this.div
         
         const add_values = () => {
+            // To add the values, set the revevant fileds in the metrics wizard to this elements values (name, voltage over, current through, etc.)
             document.getElementById("name_span").innerText = this.div.id
             document.getElementById("V_span").innerText = this.voltage
             document.getElementById("I_span").innerText = this.current
@@ -296,6 +312,7 @@ class Component {
             document.getElementById("P_span").innerText = Math.round((this.voltage * this.current)*100) / 100
         }
         const remove_values = () => {
+            // Return all value to their default state
             document.getElementById("name_span").innerText = "  -  "
             document.getElementById("V_span").innerText = "  -  "
             document.getElementById("I_span").innerText = "  -  "
@@ -304,34 +321,41 @@ class Component {
         }
 
         if (on) {
+            // If we are enabling metrics mode, the functions above are used as event listeners, called when the user mouses over or off the element
             element.onmousemove = add_values
             element.onmouseleave = remove_values
 
+            // If the element is a bulb, and there is some current through the object, the bulb brightness method is called (defined under the LoadComponent class as a bulb is a type of load component, with a resistance)
             if (this.current > 0 && this.type == "bulb") {
                 this.setBulbBrightness()
             }
 
         } else {
+            // Removes the named event listeners to disable metric mode on the component object & HTML element
             document.removeEventListener("mousemove", add_values)
             document.removeEventListener("mouseleave", add_values)
+            // Removes the glow from bulbs by removing the last declared child of the bulb div (the glow element)
             if (this.type == "bulb") { this.div.removeChild(this.div.lastChild) }
         }
     }
 
-
+    // Rotates the element, by toggling the rotate class (which turns it by 90 degrees on the screen when enabled)
     rotate() {
         this.div.classList.toggle("rotated")
         SetAllPortCoords()
     }
 
+    // Places x-y coordinates to the grid, by rounding them to the nearest 30 pixels (each square of the grid is 30 x 30 px)
     placeToGrid(x, y) {
         let cellsize = 30;
         let NewCoords = []
 
         let coords = [x , y]
         coords.forEach(coord => {
+            // Round up and round down
             let up = Math.ceil(coord/cellsize)*cellsize;
             let down = Math.floor(coord/cellsize)*cellsize;
+            // Add to the new coordinates whichever of the rounded up and down values is closest to the original value (using the absoluet differences of each)
             NewCoords.push(( Math.abs(coord - up) < Math.abs(coord - down) ? up : down))
         });
     
@@ -342,6 +366,7 @@ class Component {
         return this.portCoords
     }
 
+    // Sets the connections, representing the names of circuit elements on the screen this element is connected to
     SetConnections() {
         console.log(`Setting Connections for ${this.div.id}...`)
         
@@ -361,9 +386,6 @@ class Component {
             
             let connection = AreConnected(this.getPortCoords(), comp.getPortCoords())
 
-            // console.log(connection)
-
-            // console.log(connection && this.connections.length < 2 && !(this.connections.includes(id)))
 
             if ( connection && !(this.connections["t1"] || this.connections["t2"]) < 2 && !(this.connections["t1"].includes(id) || this.connections["t2"].includes(id))) 
             {
