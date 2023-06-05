@@ -6,9 +6,9 @@ const { Notification } = require("electron")
 /*
 This function is used to calls the ALM, and places the circuit data to be analysed into a temporary file, results.json
 The command to call the analysis changes depending on if the app is running on Windows or Linux.
-The temprorary file is then written using the circuitString value (the stringified data on the circuits elements, properties, onnections etc.)
+The temporary file is then written using the circuitString value (the stringified data on the circuits elements, properties, connections etc.)
 Once that is done, the python code is called, in a child process of the client. 
-Thus, it runs on a sepearte thread on the CPU, being executed concurrently with the client.
+Thus, it runs on a separate thread on the CPU, being executed concurrently with the client.
 When the program returns (he analysis has been completed), and no errors occur, the LoadResults function loads the results
 If an error occurs (which it shouldn't but obviously did during development), the SendErrorMessage is called
 */

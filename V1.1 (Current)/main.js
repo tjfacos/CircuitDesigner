@@ -80,7 +80,7 @@ const createWindow = () => {
 
 }
 
-// Adds handlers when the renderer sents messages and data to the main process, through channels like CallAnalysis
+// Adds handlers when the renderer sends messages and data to the main process, through channels like CallAnalysis
 const AddHandlers = (mainWindow) => {
   
   ipcMain.handle("CallAnalysis", (_, circuit) => {

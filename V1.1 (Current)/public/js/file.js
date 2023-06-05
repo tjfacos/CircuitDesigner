@@ -8,7 +8,7 @@ const mapToStr = (map) => {
     map.forEach((comp, name) => {
         obj[name] = {}
         for (let property in comp) {
-            // The dives can be effectively saved, so skip encoing them
+            // The dives can be effectively saved, so skip encoding them
             if (property == "div") {} 
             else {
                 obj[name][property] = comp[property]
@@ -22,7 +22,7 @@ const mapToStr = (map) => {
 
 
 // This method is invoked from the main process in Electron, and saves the circuit
-// It uses the above method to get the obejct string version of the component map (maps in JavaScript can be directly cast to strings)
+// It uses the above method to get the object string version of the component map (maps in JavaScript can be directly cast to strings)
 // It also gets the HTML content of the component-container, which contains the actual visual elements 
 // Finally, the SaveDesign method of the inter-process API is called, which send the data to be stored by the main process
 // If these is no circuit content to save, the function calls the NotifyUser method to send a notification to the screen
@@ -107,7 +107,7 @@ const NewDesign = () => {
             "wire": 1
         };
     
-        // Reset componentMap (where the coomponent objects for the circuit are stored), 
+        // Reset componentMap (where the component objects for the circuit are stored), 
         // and the component-container (where they exist on the visible page)
         
         componentMap = new Map()

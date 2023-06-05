@@ -1,6 +1,6 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
-// The context brdge module of Electron allows me to expose methods for the inter-process communication (IPC)
+// The context bridge module of Electron allows me to expose methods for the inter-process communication (IPC)
 contextBridge.exposeInMainWorld('api', {
   // These methods define what to do when the renderer calls these methods, to send messages to the main process
   CommenceAnalysis: (data) => { return ipcRenderer.invoke("CallAnalysis", JSON.stringify(data))},

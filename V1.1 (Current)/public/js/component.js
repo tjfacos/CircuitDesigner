@@ -15,7 +15,7 @@ var SelectedElement = null;
 /*
 
 The Component Class is the base class for all standard component classes, from which the component objects are instantiated
-Classes are effectivly blueprints that are used to created objects
+Classes are effectively blueprints that are used to created objects
 
 */
 
@@ -93,7 +93,7 @@ class Component {
         var x = this.div.offsetLeft
         var y = this.div.offsetTop
         
-        // Find the width and height of the component on the screen, and calculate the coodinates for the centre of the element
+        // Find the width and height of the component on the screen, and calculate the coordinates for the centre of the element
         let width = this.width
         let height = this.height
 
@@ -114,7 +114,7 @@ class Component {
             port2[0] += width/2
         }
         
-        // Set the portCoords attibute to reflect these calculations
+        // Set the portCoords attribute to reflect these calculations
         this.portCoords = [port1, port2]
 
         // Find the connected elements
@@ -231,7 +231,7 @@ class Component {
         
     }
     
-    // This method adds event handers, that allow the user to drag the HTML element on the screen
+    // This method adds event handlers, that allow the user to drag the HTML element on the screen
     addMovement() {
         let element = this.div;
         // The div listens for the user clicking on it
@@ -281,7 +281,7 @@ class Component {
         element.addEventListener("dblclick", () => {
             console.log(`${element.id} selected...`)
             element.classList.toggle("selectedComponent")
-            // Toggle the editor wizrd to on, and pass this object to it, so its values can be loaded into it
+            // Toggle the editor wizard to on, and pass this object to it, so its values can be loaded into it
             ToggleEditor(this, "on")
             // This objet is now in the selected state
             this.selected = true;
@@ -304,7 +304,7 @@ class Component {
         let element = this.div
         
         const add_values = () => {
-            // To add the values, set the revevant fileds in the metrics wizard to this elements values (name, voltage over, current through, etc.)
+            // To add the values, set the relevant fields in the metrics wizard to this elements values (name, voltage over, current through, etc.)
             document.getElementById("name_span").innerText = this.div.id
             document.getElementById("V_span").innerText = this.voltage
             document.getElementById("I_span").innerText = this.current
@@ -370,13 +370,13 @@ class Component {
     SetConnections() {
         console.log(`Setting Connections for ${this.div.id}...`)
         
-        // Conections are stored as a dictioary, with bth terminals having a list of connected elements
+        // Connections are stored as a dictionary, with bth terminals having a list of connected elements
         this.connections = {
             "t1": [],
             "t2": []
         }
         
-        // Check each comonent
+        // Check each component
         componentMap.forEach((comp, id) => {
             
             // Do nothing if you find your own object in the componentMap
@@ -437,7 +437,7 @@ class LoadComponent extends Component {
         glow.style.left = "35px"
         glow.classList.add("bulb-glow")
 
-        // Brightness is caluclated using the power over the component (P = VI), and is used to set the glow element's opacity
+        // Brightness is calculated using the power over the component (P = VI), and is used to set the glow element's opacity
         // The maximum is 0.8, at 5 watts 
         let brightness = (this.current * this.voltage) * 0.8 / 5
         
@@ -449,7 +449,7 @@ class LoadComponent extends Component {
     }
 }
 
-// This is caled when users select a compoent from the toolbar
+// This is called when users select a component from the toolbar
 const addComponent = (type, fromLoad) => {
 
     let component;
@@ -526,7 +526,7 @@ const RotateComponent = () => {
     })
 }
 
-// Call all items to evaluate their port cooridinate and connections
+// Call all items to evaluate their port coordinate and connections
 const SetAllPortCoords = () => {
     console.log("Setting all Port Coords...")
     componentMap.forEach((item) => {
@@ -588,12 +588,12 @@ const createWire = (load_data) => {
     
     const wireName = "wire" + ComponentCounters["wire"]++;
 
-    // If this iwre is being loaded from a saved design, return a wire using that data as its initial state
+    // If this wire is being loaded from a saved design, return a wire using that data as its initial state
     if (load_data) {
         return new Wire(load_data, null, null, wireName)
     }
     
-    // A container is created, to contain the wire and joints intside the HTML DOM (Document Object Model), where the HTML elements exist
+    // A container is created, to contain the wire and joints inside the HTML DOM (Document Object Model), where the HTML elements exist
     var container = document.createElement("div")
     container.id = wireName + "-container"
     container.classList.add("wire-container")
@@ -604,7 +604,7 @@ const createWire = (load_data) => {
     
     const thickness = 10
     
-    // Initialise aninstance of the wire class
+    // Initialise an instance of the wire class
     var wire = new Wire(null, joints, thickness, wireName)
     
     
@@ -782,7 +782,7 @@ class Wire {
     }
 
     // This method is identical to the one above
-    // They share the same name, so all componnts can send messages (call eah others methods) using a common interface
+    // They share the same name, so all components can send messages (call eah others methods) using a common interface
     // This makes it possible for components of unrelated classes to interact
     
     SetConnections() {

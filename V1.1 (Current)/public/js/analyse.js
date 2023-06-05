@@ -64,7 +64,7 @@ const encodeCircuit = () => {
     }
     )
     
-    // Console.log statements are dotted around the appilcation, which help me figure out
+    // Console.log statements are dotted around the application, which help me figure out
     // what is happening (or going wrong) at different parts
     console.log(componentsObj)
 
@@ -74,7 +74,7 @@ const encodeCircuit = () => {
 }
 
 
-// Recieve Analysis Data
+// Receive Analysis Data
 api.ReceiveAnalysis((_, results) => {
     DisplayAnalysis(results)
 })

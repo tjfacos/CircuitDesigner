@@ -7,7 +7,7 @@ import json
 
 def build(raw):
     
-    print(f"Raw Data Recieved: {raw}")
+    print(f"Raw Data Received: {raw}")
 
     # Parse the raw JSON data to a Python Dictionary
     data = json.loads(raw)

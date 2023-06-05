@@ -3,7 +3,7 @@ This stylesheet styles HTML elements that are part of representing components on
 
 It also contains styles for classes that are procedurally added to component elements on the screen.
 
-E.g. when a component is rotated, the rotated class is added to its classList, and the .component.rotated syle below rotates the HTML element 90 degrees
+E.g. when a component is rotated, the rotated class is added to its classList, and the .component.rotated style below rotates the HTML element 90 degrees
 */
 
 

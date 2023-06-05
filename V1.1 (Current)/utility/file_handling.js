@@ -42,7 +42,7 @@ const SaveDesign = (data, mainWindow) => {
 /* 
 This method builds an array, containing:
  - The componentMap data (except div)
- - The innerHTML for the comoponent container
+ - The innerHTML for the component container
 
 If the operation is cancelled, nothing happens.
 Otherwise, the method loads the contents of the file the user selects using the Open Dialog,
