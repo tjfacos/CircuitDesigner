@@ -96,11 +96,10 @@ class Component {
         // Find the width and height of the component on the screen, and calculate the coodinates for the centre of the element
         let width = this.width
         let height = this.height
-        let centre = [x+width/2, y+height/2]
 
-        // Set initial positions of the ports to be the centre
-        let port1 = centre
-        let port2 = centre
+        // Set initial positions of the ports to be the centre of the div
+        let port1 = [x+width/2, y+height/2]
+        let port2 = [x+width/2, y+height/2]
 
 
         // If the component is rotated (vertical orientation)
