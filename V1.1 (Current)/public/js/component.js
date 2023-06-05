@@ -781,7 +781,7 @@ class Wire {
         return this.portCoords
     }
 
-    // This method is identicla to the one above
+    // This method is identical to the one above
     // They share the same name, so all componnts can send messages (call eah others methods) using a common interface
     // This makes it possible for components of unrelated classes to interact
     
