@@ -5,17 +5,19 @@ const path = require('path')
 const { CallAnalysis } = require("./utility/python_connection")
 const { SaveDesign, LoadDesign } = require("./utility/file_handling")
 
-
+// Function to create Main Window
 const createWindow = () => {
   
+  // Creates new instance of Electron's BrowserWindow class
   const mainWindow = new BrowserWindow({
     icon: __dirname + '/assets/icons/favicon.ico',
     webPreferences: {
+      // A preload script is loaded, defining the channels that the renderer and main processes can use to communicate
       preload: path.join(__dirname, 'preload.js')
     }
   })
 
-  // Form menu
+  // Form menu, adding options with shortcuts
   
   let menu = new Menu()
 
@@ -26,6 +28,7 @@ const createWindow = () => {
         "label": "New Design",
         "accelerator": "Ctrl+N",
         "click": () => {
+          // The main process sends a message through the 'new-file' channel, instructing the renderer to start a new design
           mainWindow.webContents.send("new-file")
         }
       },
@@ -33,6 +36,7 @@ const createWindow = () => {
         "label": "Save Design",
         "accelerator": "Ctrl+S",
         "click": () => {
+          // Runs the SaveCircuit function in the renderer
           mainWindow.webContents.executeJavaScript("SaveCircuit()") 
         }
       },
@@ -46,11 +50,11 @@ const createWindow = () => {
     ]
   })
   
+  // This is a shortcut I use to open Electron's DevTools, a facility for be to inspect the internal state of the page and renderer
   devToolsItem = new MenuItem({
     "click": () => {
       mainWindow.webContents.openDevTools()
     },
-    // "label": "DevTools",
     "accelerator": "Ctrl+Shift+I"
   })
   
@@ -61,10 +65,12 @@ const createWindow = () => {
     "label": "Help"    
   })
 
+  // Add menu options to the main menu bar (the top bar)
   menu.append(fileItem)
   menu.append(devToolsItem)
   menu.append(helpItem)
 
+  // Load renderer files and set menu
   mainWindow.maximize()
   mainWindow.loadFile('public/index.html')
   mainWindow.setMenu(menu)
@@ -74,6 +80,7 @@ const createWindow = () => {
 
 }
 
+// Adds handlers when the renderer sents messages and data to the main process, through channels like CallAnalysis
 const AddHandlers = (mainWindow) => {
   
   ipcMain.handle("CallAnalysis", (_, circuit) => {
@@ -87,10 +94,12 @@ const AddHandlers = (mainWindow) => {
     SaveDesign(data, mainWindow)
   })
 
+  // This is a default channel, that can be used to call generic notifications from the renderer
   ipcMain.handle("NotifyUser", (_, body) => {
     new Notification(body).show()
   })
 
+  // Establish the shortcut to simulate
   globalShortcut.register('Ctrl+f5', () => {
     mainWindow.webContents.executeJavaScript("Simulate()")
   })
