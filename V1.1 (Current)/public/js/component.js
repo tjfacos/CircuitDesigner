@@ -370,30 +370,34 @@ class Component {
     SetConnections() {
         console.log(`Setting Connections for ${this.div.id}...`)
         
+        // Conections are stored as a dictioary, with bth terminals having a list of connected elements
         this.connections = {
             "t1": [],
             "t2": []
         }
         
+        // Check each comonent
         componentMap.forEach((comp, id) => {
             
-            // If they are connected, and there are less than 2 connections already, and the component isn't already in the list
-            // Then add the id and have the component eval its own connections
-
+            // Do nothing if you find your own object in the componentMap
             if (this.div.id == id) { return }
-
+            
             console.log(`Checking for connection with ${id}`)
             
+            // Calls the areConnected method, which returns which terminal, if any, the 2 components are connected to
             let connection = AreConnected(this.getPortCoords(), comp.getPortCoords())
-
-
-            if ( connection && !(this.connections["t1"] || this.connections["t2"]) < 2 && !(this.connections["t1"].includes(id) || this.connections["t2"].includes(id))) 
+            
+            
+            // If they are connected, and the component isn't already in the list
+            // Then add the id aof the connected element to the list at that terminal, and have the component eval its own connections
+            if ( connection && !(this.connections["t1"].includes(id) || this.connections["t2"].includes(id))) 
             {
                 console.log(`Connection with ${id} detected...`)
                 
                 let terminal = `t${connection}`
                 this.connections[terminal].push(id)
                 
+                // Only call the connected element to evaluate its connections if you aren't in its connections list
                 if (comp.connections["t1"].includes(this.div.id) || comp.connections["t2"].includes(this.div.id)) {}
                 else { comp.SetConnections() }
             }
@@ -402,6 +406,7 @@ class Component {
     }
 }
 
+// Cell class inherits all the functionality of the Component class, but also has an emf attribute
 class Cell extends Component {
     constructor (type, load_data) {
         super(type, load_data);
@@ -410,6 +415,8 @@ class Cell extends Component {
     }
 }
 
+// LoadComponent class (used for resistors and bulbs) inherits all the functionality of the Component class, but also has a resistance attribute
+// It also has the setBulbBrightness method for bulbs
 class LoadComponent extends Component {
     constructor (type, load_data) {
         // console.log(load_data)
@@ -421,6 +428,7 @@ class LoadComponent extends Component {
     }
 
     setBulbBrightness() {
+        // Add glow as a HTML element over the bulb
         let glow = document.createElement("div")
 
         glow.style.position = "absolute"
@@ -429,6 +437,8 @@ class LoadComponent extends Component {
         glow.style.left = "35px"
         glow.classList.add("bulb-glow")
 
+        // Brightness is caluclated using the power over the component (P = VI), and is used to set the glow element's opacity
+        // The maximum is 0.8, at 5 watts 
         let brightness = (this.current * this.voltage) * 0.8 / 5
         
         if (brightness > 0.8){ brightness = 0.8 }
@@ -439,10 +449,12 @@ class LoadComponent extends Component {
     }
 }
 
+// This is caled when users select a compoent from the toolbar
 const addComponent = (type, fromLoad) => {
 
     let component;
 
+    // Add a new component, using its type and any load data
     if (type == "cell") {
         component = new Cell(type, fromLoad);
     } else if (type == "wire") {
@@ -452,12 +464,14 @@ const addComponent = (type, fromLoad) => {
     }
     
     component.type = type
-    componentMap.set(component.div.id, component);
 
-    // console.log(componentMap);
+    // Add to component map, using the object's HTML element's ID as its name
+    componentMap.set(component.div.id, component);
 
 }
 
+
+// Load component after a file has been loaded
 const addComponentFromLoad = (componentObj) => {
     let component;
     let type = componentObj.type
@@ -475,9 +489,11 @@ const addComponentFromLoad = (componentObj) => {
 
 }
 
-
+// Called when a user presses the delete button on the editor wizard, or presses the delete button
 const DeleteComponent = () => {
     componentMap.forEach(async (item, key) => {
+        // IF there is a selected item, remove it from the screen, and the component map
+
         if (item.selected) {
             
             console.log(`Deleting Component ${item.div.id}...`)
@@ -490,17 +506,18 @@ const DeleteComponent = () => {
 
             componentMap.delete(key);
 
+            // Re-evaluate 
             componentMap.forEach((comp) => {
                 comp.SetConnections()
             })
             
-            ToggleEditor()
+            ToggleEditor(null, "off")
 
-            console.log("Delete Procedure finished... ")
         }
     })
 }
 
+// To rotate a component (using r or the rotate button), loop through to find the selected component, and call the rotate method on it
 const RotateComponent = () => {
     componentMap.forEach((item) => {
         if (item.selected) {
@@ -509,7 +526,7 @@ const RotateComponent = () => {
     })
 }
 
-
+// Call all items to evaluate their port cooridinate and connections
 const SetAllPortCoords = () => {
     console.log("Setting all Port Coords...")
     componentMap.forEach((item) => {
@@ -517,11 +534,10 @@ const SetAllPortCoords = () => {
     })
 }
 
-
+// This method places and produces wires to be placed in the component map
 const createWire = (load_data) => {
     
-    
-    
+    // Function to create the joints (the blue dots shown at both ends of the wire when they are placed)
     const createJoint = () => {
         let joint = document.createElement("div")
         joint.classList.add("joint")
@@ -529,6 +545,7 @@ const createWire = (load_data) => {
         return joint
     }
     
+    // This function places coordinate the grid, as seen in an above method
     const placeToGrid = (x, y) => {
         let cellsize = 30;
         let NewCoords = []
@@ -543,6 +560,8 @@ const createWire = (load_data) => {
         return NewCoords;
     }
     
+    // This method takes the coordinates of the 2 ends of a wire, and positions it to a horizontal or vertical grid line, 
+    // to fix the port positions in either horizontal and vertical
     const positionWireToLine = (X1, Y1, X2, Y2) => {
         const [x2,y2] = placeToGrid(X2, Y2)
         let x1 = X1
@@ -558,8 +577,7 @@ const createWire = (load_data) => {
             orientation = "vertical"
         } 
         
-        // console.log(orientation)
-        
+
         if (orientation == "horizontal") { //Horizontal
             return [x2, y1]
         } else { //Vertical
@@ -570,25 +588,32 @@ const createWire = (load_data) => {
     
     const wireName = "wire" + ComponentCounters["wire"]++;
 
+    // If this iwre is being loaded from a saved design, return a wire using that data as its initial state
     if (load_data) {
         return new Wire(load_data, null, null, wireName)
     }
     
+    // A container is created, to contain the wire and joints intside the HTML DOM (Document Object Model), where the HTML elements exist
     var container = document.createElement("div")
     container.id = wireName + "-container"
     container.classList.add("wire-container")
     document.getElementById("component-container").append(container)
     
+    // Create Joints
     let joints = [createJoint(), createJoint()]
     
     const thickness = 10
+    
+    // Initialise aninstance of the wire class
     var wire = new Wire(null, joints, thickness, wireName)
     
     
     wire.addToContainer()
     
     
-    // Start Placement
+    // Start Wire Placement
+
+    // Show blue overlay
     let overlay = document.getElementById("overlay")
     overlay.style.display = "block"
     
@@ -596,24 +621,29 @@ const createWire = (load_data) => {
     
     var x1, y1, x2, y2
     
+    // Event listeners are used so the joint racks the mouse on the screen (similar to standard components)
     document.onmousemove = (e) => {
         [x1, y1] = placeToGrid(e.pageX, e.pageY)
         joint1.style.left = (x1-joint1.clientWidth/2) + "px";
         joint1.style.top = (y1-joint1.clientHeight/2) + "px";
     }
 
+    // When the user clicks first, place the first joint
     document.onclick = (e) => {
         document.onmousemove = (e) => {
             [x2, y2] = positionWireToLine(x1, y1, e.pageX, e.pageY)
             joint2.style.left = (x2-joint1.clientWidth/2) + "px";
             joint2.style.top = (y2-joint1.clientHeight/2) + "px";
         }
+
+        // When the user clicks for the second time, in a different place, remove event listeners and draw the wire
         document.onclick = (e) => {
             
             if (x1 == x2 && y1 == y2) {
                 return;
             }
             
+            // Remove overlay and event listeners
             overlay.style.display = "none"
             document.onmousemove = () => {}
             document.onclick = () => {}
@@ -641,8 +671,9 @@ const createWire = (load_data) => {
                 [x1, y1],
                 [x2, y2]
             ]
+
+            // Set connections and draw to screen, also adding event handlers
             wire.SetConnections()
-            console.log(wire.portCoords)
             wire.Realise(left, top, length, orientation)
         }
     }
@@ -650,8 +681,6 @@ const createWire = (load_data) => {
     return wire
 
 }
-
-
 
 
 class Wire {
@@ -675,6 +704,7 @@ class Wire {
         this.ports = joints
     }
     
+    // Set wire state using loaded data, if present
     setFromLoad(load_data, name) {
         console.log(name)
         console.log(load_data)
@@ -687,8 +717,10 @@ class Wire {
         this.addControls()
     }
 
+    // Add wire to wire-container
     addToContainer() { document.getElementById(this.div.id + "-container").append(this.div) }
     
+    // Draw wire to screen and then add controls
     Realise(left, top, length, orientation) {
         
         
@@ -709,6 +741,7 @@ class Wire {
         this.addControls()
     }
 
+
     addControls () {
         
         console.log("Adding controls...")
@@ -717,7 +750,7 @@ class Wire {
         var [joint1, joint2] = this.ports
         var wizard = document.getElementById("editor-wizard");
 
-        // Add event listener to bring up controls on double-click
+        // Add event listener to bring up controls on double-click, and hide them when the user clicks off
         
         element.addEventListener("dblclick", () => {
             console.log(`${element.id} selected...`)
@@ -736,6 +769,7 @@ class Wire {
         
     }
 
+    // Remove the wires components from the component-container
     destroy() {
         document.getElementById(this.div.id + "-container").remove()
         this.div.remove()
@@ -747,6 +781,10 @@ class Wire {
         return this.portCoords
     }
 
+    // This method is identicla to the one above
+    // They share the same name, so all componnts can send messages (call eah others methods) using a common interface
+    // This makes it possible for components of unrelated classes to interact
+    
     SetConnections() {
         console.log(`Setting Connections for ${this.div.id}...`)
         
@@ -781,10 +819,3 @@ class Wire {
     }
 
 }
-
-
-
-
-
-
-
