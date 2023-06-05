@@ -8,9 +8,6 @@ from PySpice.Unit import *
 
 from modules import construction, file
 
-
-from TestScripts.demo import DemoData
-
 if __name__ == "__main__":
 
     # This file manages the activities of the ALM

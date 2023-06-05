@@ -1,23 +1,16 @@
 import os
-from TestScripts.demo import DemoData
 
 import json
 
 # This function loads the raw JSON data from circuit.json, then deletes the file
 def LoadFile():
-    try:
-        PATH = "./temp/circuit.json"
-        
-        with open(PATH) as f:
-            data = f.read()
-        
-        os.remove(PATH)
+    PATH = "./temp/circuit.json"
+    
+    with open(PATH) as f:
+        data = f.read()
+    
+    os.remove(PATH)
             
-
-    except OSError:
-        print("FILE LOAD FAILED!!! Using DemoData")
-        # This was used o load data for a demo circuit I used while developing the ALM
-        data = DemoData
 
     return data
 
