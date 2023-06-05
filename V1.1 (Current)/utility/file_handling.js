@@ -2,7 +2,10 @@ const fs = require("fs")
 const resolve = require("path").resolve
 const { dialog, Notification, ipcMain } = require("electron")
 /*
-  
+This method saves the HTML content and circuit element data to a file
+the user creates, through the save dialog.
+The method first opens the save dialog, which returns the file path of the file the user wants to create.
+THe program then writes the circuit data to that file, and show a notification which informs the user exactly where the file has been saved
 */ 
 const SaveDesign = (data, mainWindow) => {
     
@@ -23,7 +26,6 @@ const SaveDesign = (data, mainWindow) => {
             fs.writeFile(value.filePath, data, (err) => {
               if (err){ console.log(`ERROR: ${err}`) }
               else { 
-                // console.log("WOOOOO!")
                 new Notification({
                   title: "Save Successful!",
                   body: `File saved to ${value.filePath}`

@@ -9,10 +9,12 @@ def build(raw):
     
     print(f"Raw Data Recieved: {raw}")
 
+    # Parse the raw JSON data to a Python Dictionary
     data = json.loads(raw)
 
     circuit_obj = CircuitModel()
 
+    # For each object in the circuit data, add a new component to the circuit object
     for obj in data:
         match data[obj]["type"]:
             case "cell":
