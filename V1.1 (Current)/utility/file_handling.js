@@ -1,12 +1,11 @@
 const fs = require("fs")
 const resolve = require("path").resolve
 const { dialog, Notification, ipcMain } = require("electron")
-
+/*
+  
+*/ 
 const SaveDesign = (data, mainWindow) => {
-    // console.log(data)
     
-    var success = false
-
     dialog.showSaveDialog(mainWindow, {
         "buttonLabel": "Save",
         "title": "Save Circuit Design",
@@ -17,13 +16,10 @@ const SaveDesign = (data, mainWindow) => {
         }]
       }).then((value) => {
         
-        // console.log(value)
-
           if (value.canceled) {
             console.log("Operation Cancelled")
           } else {
-            // console.log(value.filePath)
-
+       
             fs.writeFile(value.filePath, data, (err) => {
               if (err){ console.log(`ERROR: ${err}`) }
               else { 
@@ -42,11 +38,13 @@ const SaveDesign = (data, mainWindow) => {
 }
 
 /* 
-This method returns an array, containingL:
+This method builds an array, containing:
  - The componentMap data (except div)
  - The innerHTML for the comoponent container
 
- If the operation is cancelled, an empy array is returned
+If the operation is cancelled, nothing happens.
+Otherwise, the method loads the contents of the file the user selects using the Open Dialog,
+and sends this data, through the 'loaded-file' channel to the renderer
 */
 
 
@@ -64,9 +62,6 @@ const LoadDesign = async (mainWindow) => {
 
   })
   
-  // console.log(result)
-
-
   if (result.canceled){ return }
 
   fs.readFile(result.filePaths[0], "utf-8", (err, content) => {
